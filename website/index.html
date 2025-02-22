@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Bear Necessities App</title>
+  <style>
+    /* Global Styles */
+    body {
+      margin: 0;
+      font-family: Arial, sans-serif;
+      background: #eed9c4;
+      color: #333;
+    }
+    /* Header with Signup/Login */
+    .header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 20px;
+      background: #fff;
+      box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    }
+    .header .logo {
+      font-size: 24px;
+      font-weight: bold;
+    }
+    .header .auth-buttons a {
+      text-decoration: none;
+      margin-left: 15px;
+      padding: 8px 15px;
+      border: 1px solid #333;
+      border-radius: 4px;
+      color: #333;
+      transition: background 0.3s, color 0.3s;
+    }
+    .header .auth-buttons a:hover {
+      background: #333;
+      color: #fff;
+    }
+    /* Centered Container */
+    .container {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: calc(100vh - 80px); /* adjust based on header height */
+    }
+    /* Leaderboard Styles */
+    .leaderboard {
+      background: #fff;
+      padding: 30px;
+      border-radius: 8px;
+      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+      width: 90%;
+      max-width: 600px;
+    }
+    .leaderboard h2 {
+      text-align: center;
+      margin-top: 0;
+      margin-bottom: 20px;
+    }
+    .leaderboard table {
+      width: 100%;
+      border-collapse: collapse;
+    }
+    .leaderboard th, .leaderboard td {
+      padding: 12px 15px;
+      border-bottom: 1px solid #ddd;
+      text-align: center;
+    }
+    .leaderboard th {
+      background: #f7f7f7;
+    }
+    .leaderboard tr:last-child td {
+      border-bottom: none;
+    }
+  </style>
+</head>
+<body>
+  <!-- Header -->
+  <header class="header">
+    <div class="logo">Bear Necessities App</div>
+    <div class="auth-buttons">
+      <a href="#signup">Sign Up</a>
+      <a href="#login">Log In</a>
+    </div>
+  </header>
+  
+  <div class="container">
+    <div class="leaderboard">
+      <h2>Global Leaderboard</h2>
+      <table>
+        <thead>
+          <tr>
+            <th>Rank</th>
+            <th>Username</th>
+            <th>Score</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>1</td>
+            <td>BearMaster</td>
+            <td>9800</td>
+          </tr>
+          <tr>
+            <td>2</td>
+            <td>HoneyLover</td>
+            <td>9650</td>
+          </tr>
+          <tr>
+            <td>3</td>
+            <td>GrizzlyKing</td>
+            <td>9400</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</body>
+</html>
