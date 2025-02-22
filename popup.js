@@ -1,6 +1,6 @@
 const API_KEY = "2JYy39h8h79EgyLnvPL6bZjdAzTME"; // Replace with your actual API key
 const API_URL = "https://website-categorization.whoisxmlapi.com/api/v2";
-
+//Adding comments to resolve some issues
 // Function to fetch website category
 async function getWebsiteCategory(url) {
   try {
