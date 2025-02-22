@@ -1,76 +1,36 @@
-.login-container {
-  background: #f8f9fa;
-  padding: 2.5rem;
-  border-radius: 12px;
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
-}
-
-.login-container h2 {
-  text-align: center;
-  color: #2c3e50;
-  margin-bottom: 2.5rem;
-}
-
-.form-group {
-  margin-bottom: 2rem;
-}
-
-.form-group label {
-  display: block;
-  margin-bottom: 0.5rem;
-  color: #2c3e50;
-  font-weight: 500;
-}
-
-.form-group input {
-  padding: 0.75rem;
-  border: 1px solid #dee2e6;
-  border-radius: 6px;
-  font-size: 1rem;
-  background-color: #ffffff;
-  color: #2c3e50;
-  box-sizing: border-box;
-}
-
-.form-group input::placeholder {
-  color: #a0a0a0;
-}
-
-.form-group input:focus {
-  outline: none;
-  border-color: #C27F54;
-  box-shadow: 0 0 0 2px rgba(194, 127, 84, 0.1);
-}
-
-.login-btn {
-  padding: 0.75rem;
+.navbar {
+  display: flex;
+  justify-content: flex-end;
+  align-items: center;
+  padding: 10px;
   background-color: #C27F54;
-  color: white;
-  border: none;
-  border-radius: 6px;
-  font-size: 1rem;
-  font-weight: 600;
-  cursor: pointer;
-  transition: background-color 0.2s;
-  box-sizing: border-box;
+  width: 100%;
+  position: fixed;
+  top: 0;
+  left: 0;
+  z-index: 1000;
+  padding-right: 10px; /* Move buttons to the left */
 }
 
-.login-btn:hover {
-  background-color: #b06d44;
+.google-login-btn {
+  margin-right: 10px;
 }
 
-.login-footer {
-  margin-top: 1.5rem;
-  text-align: center;
-  color: #7f8c8d;
+.signup-link {
+  color: #fff; /* Change text color to white */
 }
 
-.login-footer a {
-  color: #C27F54;
+.signup-link a {
+  color: #000;
+  background-color: #fff;
+  padding: 0.6em 1.2em;
+  border-radius: 8px;
   text-decoration: none;
-  font-weight: 500;
+  border: 1px solid transparent;
+  transition: border-color 0.25s;
+  margin-right: 20px;
 }
 
-.login-footer a:hover {
-  text-decoration: underline;
-} 
+.signup-link a:hover {
+  border-color: #d79168;
+}

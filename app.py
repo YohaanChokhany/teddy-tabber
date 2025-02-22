@@ -1,11 +1,11 @@
 import google.generativeai as genai
+import json
+
 print("Google Generative AI module is working!")
 
-# Step 1: Configure the Gemini API
 API_KEY = "AIzaSyC3zDAbuPrj4okDnXmvpHRbqLKo3GywmrE"  # Replace with your actual API key
 genai.configure(api_key=API_KEY)
 
-# Step 2: Define the categories
 CATEGORIES = {
     "education": 5,
     "productivity": 5,
@@ -17,40 +17,62 @@ CATEGORIES = {
     "gaming": -5,
 }
 
-# Step 3: Function to classify tabs
 def categorize_tabs(tab_titles):
-    model = genai.GenerativeModel("gemini-1.5-flash")  # Adjust model version as needed
+    model = genai.GenerativeModel("gemini-1.5-flash")
 
-    # Construct the prompt
     prompt = f"""
-    You are an AI that categorizes website tabs into predefined categories with scores:
-    {CATEGORIES}
-
-    Given a list of tab titles, return the most suitable category for each.
-
-    Example format:
-    - "Khan Academy - Learn Math" -> "education"
-    - "Stock Market News - Bloomberg" -> "finance & investments"
-    - "TikTok - Watch Videos" -> "social media"
-
+    You are an AI that categorizes website tabs into predefined categories:
+    {list(CATEGORIES.keys())}
+    Given a list of tab titles, return a JSON object mapping each tab to a category.
+    
+    Example:
+    {{
+      "Khan Academy - Learn Math": "education",
+      "Stock Market News - Bloomberg": "finance & investments",
+      "TikTok - Watch Videos": "social media"
+    }}
+    
     Tabs to categorize:
-    {tab_titles}
+    {json.dumps(tab_titles)}
     """
 
-    # Generate AI response
     response = model.generate_content(prompt)
 
-    return response.text
+    try:
+        categorized_data = json.loads(response.text)  # Parse JSON response
+        return categorized_data
+    except json.JSONDecodeError:
+        print("Error: Gemini API response not in valid JSON format.")
+        return {title: "Uncategorized" for title in tab_titles}  # Default to Uncategorized
 
-# Step 4: Example usage
-tabs = [
-    "Khan Academy - Learn Math",
-    "Gmail - Inbox",
-    "GitHub - Open Source Projects",
-    "Netflix - Watch Movies",
-    "Yahoo Finance - Stock Prices",
-    "Fortnite - Play Now",
-]
+async def fetch_and_categorize_tabs():
+    tabs = await chrome.tabs.query({})
+    tab_titles = [tab.title for tab in tabs if tab.url]
+    categorized_tabs = categorize_tabs(tab_titles)
+    return categorized_tabs
 
-categorized_tabs = categorize_tabs(tabs)
-print(categorized_tabs)
+async def group_tabs_by_category():
+    categorized_tabs = await fetch_and_categorize_tabs()
+    grouped_tabs = {}
+
+    for tab_title, category in categorized_tabs.items():
+        if category not in grouped_tabs:
+            grouped_tabs[category] = []
+        grouped_tabs[category].append(tab_title)
+
+    for category, tab_titles in grouped_tabs.items():
+        tab_ids = [
+            tab.id for tab in await chrome.tabs.query({})
+            if tab.title in tab_titles
+        ]
+
+        if tab_ids:
+            try:
+                group = await chrome.tabs.group({"tabIds": tab_ids})
+                await chrome.tabGroups.update(group, {"title": category})
+            except Exception as err:
+                print(f"Error grouping \"{category}\": {err}")
+
+if __name__ == "__main__":
+    import asyncio
+    asyncio.run(group_tabs_by_category())

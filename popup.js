@@ -38,6 +38,8 @@ async function getWebsiteCategory(url) {
 async function categorizeTabs() {
   console.log("Categorizing tabs...");
 
+  console.log(`Grouping tabs into: ${category}`, tabIds);
+
   const tabs = await chrome.tabs.query({});
   console.log(`Total tabs found: ${tabs.length}`);
 
@@ -141,6 +143,9 @@ async function groupTabsByCategory() {
     }
   }
 }
+document.addEventListener("DOMContentLoaded", () => {
+  chrome.runtime.sendMessage({ action: "categorizeTabs" });
+});
 
 // Initialize categorization when popup is loaded
 document.addEventListener("DOMContentLoaded", categorizeTabs);
