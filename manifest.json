@@ -4,7 +4,8 @@
   "version": "1.0",
   "description": "Manage and categorize your open tabs.",
   "permissions": [
-    "tabs"
+    "tabs",
+    "http://localhost:5000/"
   ],
   "host_permissions": [
     "<all_urls>"

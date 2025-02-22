@@ -144,6 +144,34 @@ document.addEventListener('DOMContentLoaded', () => {
       checkbox.classList.toggle('checked');
     });
   });
+
+  // Add button for running Python script
+  const runPythonButton = document.createElement('button');
+  runPythonButton.textContent = 'Run Python Script';
+  runPythonButton.addEventListener('click', async () => {
+    try {
+      const response = await fetch('http://127.0.0.1:5000/run-python', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({
+          input_string: 'Your string here'  // Replace with your desired string
+        })
+      });
+      
+      if (!response.ok) {
+        throw new Error('Failed to run Python script');
+      }
+      
+      const result = await response.json();
+      console.log('Python script output:', result);
+    } catch (error) {
+      console.error('Error running Python script:', error);
+    }
+  });
+  
+  document.body.appendChild(runPythonButton);
 });
 
 function checkAll() {
