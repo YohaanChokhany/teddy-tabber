@@ -5,6 +5,7 @@ import Login from './components/Login';
 import Account from './components/Account';
 import './App.css';
 import './styles/Navbar.css';
+//testing if commit works?
 
 function App() {
     const { isLoading, isAuthenticated, error } = useAuth0();
