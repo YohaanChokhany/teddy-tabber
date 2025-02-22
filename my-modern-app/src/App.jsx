@@ -2,10 +2,11 @@ import React from 'react'
 import { useAuth0 } from '@auth0/auth0-react'
 import Leaderboard from './components/Leaderboard'
 import Login from './components/Login'
+import Account from './components/Account'
 import './App.css'
 
 function App() {
-    const { isLoading, isAuthenticated, error, logout } = useAuth0()
+    const { isLoading, isAuthenticated, error } = useAuth0()
 
     if (isLoading) {
         return <div>Loading...</div>
@@ -19,9 +20,7 @@ function App() {
         <div className="main-container">
             <div className="header">
                 {isAuthenticated ? (
-                    <button onClick={() => logout({ returnTo: window.location.origin })}>
-                        Your Account
-                    </button>
+                    <Account />
                 ) : (
                     <Login />
                 )}

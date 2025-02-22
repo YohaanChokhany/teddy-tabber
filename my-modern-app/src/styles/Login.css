@@ -9,11 +9,11 @@
   top: 0;
   left: 0;
   z-index: 1000;
-  padding-right: 10px; /* Move buttons to the left */
 }
 
 .google-login-btn {
-  margin-right: 10px;
+  margin-right: 20px;
+
 }
 
 .signup-link {
@@ -33,4 +33,33 @@
 
 .signup-link a:hover {
   border-color: #d79168;
+}
+
+.account-btn {
+  color: #fff;
+  background-color: #000;
+  padding: 0.6em 1.2em;
+  border-radius: 8px;
+  text-decoration: none;
+  border: 1px solid transparent;
+  transition: border-color 0.25s;
+  margin-right: 20px;
+}
+
+.account-details {
+  padding: 20px;
+  background-color: #f8f9fa;
+  border-radius: 8px;
+  margin-top: 60px; /* Adjust based on your layout */
+}
+
+.logout-btn {
+  color: #fff;
+  background-color: #d9534f;
+  padding: 0.6em 1.2em;
+  border-radius: 8px;
+  text-decoration: none;
+  border: 1px solid transparent;
+  transition: border-color 0.25s;
+  margin-left: 10px;
 }

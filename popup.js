@@ -1,6 +1,6 @@
 const API_KEY = "2JYy39h8h79EgyLnvPL6bZjdAzTME"; // Replace with your actual API key
 const API_URL = "https://website-categorization.whoisxmlapi.com/api/v2";
-//Adding comments to resolve some issues
+
 // Function to fetch website category
 async function getWebsiteCategory(url) {
   try {
@@ -37,8 +37,6 @@ async function getWebsiteCategory(url) {
 // Function to categorize open tabs
 async function categorizeTabs() {
   console.log("Categorizing tabs...");
-
-  console.log(`Grouping tabs into: ${category}`, tabIds);
 
   const tabs = await chrome.tabs.query({});
   console.log(`Total tabs found: ${tabs.length}`);
@@ -119,9 +117,6 @@ async function groupTabsByCategory() {
   for (const tab of tabs) {
     if (!tab.url) continue;
 
-    console.log(`Fetching category for grouping: ${tab.title}`);
-    const category = await getWebsiteCategory(tab.url);
-
     if (!groupedTabs[category]) {
       groupedTabs[category] = [];
     }
@@ -143,13 +138,18 @@ async function groupTabsByCategory() {
     }
   }
 }
+
 document.addEventListener("DOMContentLoaded", () => {
   chrome.runtime.sendMessage({ action: "categorizeTabs" });
+  categorizeTabs();
+
+  // Attach event listener to button for tab grouping
+  const groupButton = document.querySelector("button#group-tabs");
+  groupButton.addEventListener("click", groupTabsByCategory);
+
+  // Attach event listener to button for opening the website
+  const openWebsiteButton = document.querySelector("button#open-website");
+  openWebsiteButton.addEventListener("click", () => {
+    chrome.tabs.create({ url: "https://teddy-tabber.vercel.app" });
+  });
 });
-
-// Initialize categorization when popup is loaded
-document.addEventListener("DOMContentLoaded", categorizeTabs);
-
-// Attach event listener to button for tab grouping
-const button = document.querySelector("button");
-button.addEventListener("click", groupTabsByCategory);
