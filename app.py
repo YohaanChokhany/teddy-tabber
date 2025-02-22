@@ -1,4 +1,6 @@
 import google.generativeai as genai
+print("Google Generative AI module is working!")
+
 # Step 1: Configure the Gemini API
 API_KEY = "AIzaSyC3zDAbuPrj4okDnXmvpHRbqLKo3GywmrE"  # Replace with your actual API key
 genai.configure(api_key=API_KEY)
