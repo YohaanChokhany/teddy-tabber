@@ -18,33 +18,26 @@
   font-size: 1.5rem;
 }
 
-.auth-buttons {
+.navbar-buttons {
   display: flex;
   gap: 1rem;
+  justify-content: flex-start; /* Align buttons to the left */
+  flex-grow: 1; /* Allow buttons to take up remaining space */
+  margin-left: 20px; /* Move buttons 20px to the right */
 }
 
-.login-btn, .signup-btn {
+.navbar-button {
   padding: 0.5rem 1.5rem;
   border-radius: 4px;
   cursor: pointer;
   font-weight: 600;
   transition: all 0.3s ease;
-  white-space: nowrap;  /* Prevent button text from wrapping */
-}
-
-.login-btn {
+  white-space: nowrap;
   background-color: transparent;
-  border: 1px solid #c27f54;
   color: #c27f54;
 }
 
-.signup-btn {
-  background-color: #c27f54;
-  border: 1px solid #c27f54;
-  color: white;
-}
-
-.login-btn:hover, .signup-btn:hover {
+.navbar-button:hover {
   transform: translateY(-2px);
   box-shadow: 0 2px 8px rgba(194, 127, 84, 0.3);
 }
@@ -59,7 +52,7 @@
     font-size: 1.3rem;
   }
 
-  .login-btn, .signup-btn {
+  .navbar-button {
     padding: 0.4rem 1.2rem;
     font-size: 0.9rem;
   }
@@ -75,11 +68,11 @@
     font-size: 1.1rem;
   }
 
-  .auth-buttons {
+  .navbar-buttons {
     gap: 0.5rem;
   }
 
-  .login-btn, .signup-btn {
+  .navbar-button {
     padding: 0.3rem 1rem;
     font-size: 0.85rem;
   }
@@ -90,9 +83,4 @@
   .navbar-brand h2 {
     font-size: 1rem;
   }
-
-  .login-btn, .signup-btn {
-    padding: 0.3rem 0.8rem;
-    font-size: 0.8rem;
-  }
-} 
+}

@@ -47,19 +47,24 @@
 }
 
 .account-details {
-  padding: 20px;
+  position: fixed;
+  top: 50px;
+  right: 180px;
+  padding: 1em;
   background-color: #f8f9fa;
   border-radius: 8px;
-  margin-top: 60px; /* Adjust based on your layout */
+  margin-top: 10px; /* Adjust based on your layout */
+  margin-left: 20px;
 }
 
 .logout-btn {
   color: #fff;
   background-color: #d9534f;
+  margin-top: 30px;
   padding: 0.6em 1.2em;
   border-radius: 8px;
   text-decoration: none;
   border: 1px solid transparent;
   transition: border-color 0.25s;
-  margin-left: 10px;
+  margin-right: 10px;
 }
