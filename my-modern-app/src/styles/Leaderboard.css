@@ -172,4 +172,25 @@
   background-color: #c27f54;
   border: 1px solid #c27f54;
   color: white;
+}
+
+.rank-1 .podium-platform {
+  font-size: 2.5rem;
+  text-transform: uppercase;
+  font-weight: bold;
+  padding-top: 1.5rem;
+}
+
+.rank-2 .podium-platform {
+  font-size: 2rem;
+  text-transform: uppercase;
+  font-weight: bold;
+  padding-top: 1.2rem;
+}
+
+.rank-3 .podium-platform {
+  font-size: 1.8rem;
+  text-transform: uppercase;
+  font-weight: bold;
+  padding-top: 1rem;
 } 
