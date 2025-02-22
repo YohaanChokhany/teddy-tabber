@@ -14,17 +14,21 @@ See the License for the specific language governing permissions and
 limitations under the License.
 */
 
+
 body {
+  font-family: Georgia, serif;
   width: 20rem;
 }
 
 ul {
+  font-family: Georgia, serif;
   list-style-type: none;
   padding-inline-start: 0;
   margin: 1rem 0;
 }
 
 li {
+  font-family: Georgia, serif;
   padding: 0.25rem;
 }
 li:nth-child(odd) {
@@ -36,5 +40,6 @@ li:nth-child(even) {
 
 h3,
 p {
+  font-family: Georgia, serif;
   margin: 0;
 }

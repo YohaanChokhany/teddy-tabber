@@ -1,3 +1,4 @@
+
 // Copyright 2022 Google LLC
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
@@ -16,6 +17,7 @@ const tabs = await chrome.tabs.query({
   url: [
     'https://developer.chrome.com/docs/webstore/*',
     'https://developer.chrome.com/docs/extensions/*'
+
   ]
 });
 
