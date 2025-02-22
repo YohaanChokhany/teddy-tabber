@@ -1,3 +1,7 @@
+html {
+  scroll-behavior: smooth;
+}
+
 .navbar {
   display: flex;
   justify-content: space-between;
@@ -21,9 +25,9 @@
 .navbar-buttons {
   display: flex;
   gap: 1rem;
-  justify-content: flex-start; /* Align buttons to the left */
-  flex-grow: 1; /* Allow buttons to take up remaining space */
-  margin-left: 20px; /* Move buttons 20px to the right */
+  justify-content: flex-start;
+  flex-grow: 1;
+  margin-left: 20px;
 }
 
 .navbar-button {
@@ -34,6 +38,7 @@
   transition: all 0.3s ease;
   white-space: nowrap;
   background-color: transparent;
+  border: 1px solid #c27f54;
   color: #c27f54;
 }
 
@@ -42,45 +47,12 @@
   box-shadow: 0 2px 8px rgba(194, 127, 84, 0.3);
 }
 
-/* Tablet styles */
-@media (max-width: 768px) {
-  .navbar {
-    padding: 0.8rem 1.5rem;
-  }
-
-  .navbar-brand h2 {
-    font-size: 1.3rem;
-  }
-
-  .navbar-button {
-    padding: 0.4rem 1.2rem;
-    font-size: 0.9rem;
-  }
+.section {
+  padding: 100px 20px;
+  margin-top: 60px; /* Adjust for fixed navbar */
+  width: 100%; /* Ensure full width */
 }
 
-/* Mobile styles */
-@media (max-width: 480px) {
-  .navbar {
-    padding: 0.6rem 1rem;
-  }
-
-  .navbar-brand h2 {
-    font-size: 1.1rem;
-  }
-
-  .navbar-buttons {
-    gap: 0.5rem;
-  }
-
-  .navbar-button {
-    padding: 0.3rem 1rem;
-    font-size: 0.85rem;
-  }
-}
-
-/* Very small screens */
-@media (max-width: 350px) {
-  .navbar-brand h2 {
-    font-size: 1rem;
-  }
+#home, #analytics, #about, #leaderboard {
+  height: 100vh; /* Full viewport height */
 }
