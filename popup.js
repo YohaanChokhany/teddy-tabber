@@ -1,155 +1,127 @@
-const API_KEY = "2JYy39h8h79EgyLnvPL6bZjdAzTME"; // Replace with your actual API key
-const API_URL = "https://website-categorization.whoisxmlapi.com/api/v2";
 
-// Function to fetch website category
-async function getWebsiteCategory(url) {
+  const API_KEY = "2JYy39h8h79EgyLnvPL6bZjdAzTME";
+  const API_URL = "https://website-categorization.whoisxmlapi.com/api/v2";
+
+  async function getWebsiteCategory(url) {
   try {
-    const domain = new URL(url).hostname;
-    console.log(`Fetching category for: ${domain}`);
-
-    const response = await fetch(
-        `${API_URL}?apiKey=${API_KEY}&domain=${encodeURIComponent(domain)}`,
-        { method: "GET" }
-    );
-
-    if (!response.ok) {
-      console.error(`API Error: ${response.status} ${response.statusText}`);
-      return "Uncategorized";
-    }
-
-    const data = await response.json();
-    console.log(`Raw API response for ${domain}:`, data);
-
-    // Check if categories exist
-    if (!data.categories || data.categories.length === 0) {
-      console.warn(`No categories found for ${domain}, defaulting to Uncategorized.`);
-      return "Uncategorized";
-    }
-
-    console.log(`Category for ${domain}: ${data.categories[0]}`);
-    return data.categories[0]; // Default to first category
-  } catch (error) {
-    console.error(`Error fetching website category for ${url}:`, error);
-    return "Uncategorized";
-  }
-}
-
-// Function to categorize open tabs
-async function categorizeTabs() {
-  console.log("Categorizing tabs...");
-
-  const tabs = await chrome.tabs.query({});
-  console.log(`Total tabs found: ${tabs.length}`);
-
-  const categorizedTabs = await Promise.all(
-      tabs.map(async (tab) => {
-        if (!tab.url) {
-          console.warn(`Skipping tab with no URL: ${tab.title}`);
-          return { ...tab, category: "Uncategorized" };
-        }
-
-        console.log(`Processing tab: ${tab.title}, URL: ${tab.url}`);
-        const category = await getWebsiteCategory(tab.url);
-        console.log(`Categorized tab "${tab.title}" as "${category}"`);
-        return { ...tab, category };
-      })
+  const domain = new URL(url).hostname;
+  const response = await fetch(
+  `${API_URL}?apiKey=${API_KEY}&domain=${encodeURIComponent(domain)}`,
+{ method: "GET" }
   );
 
-  // Sort tabs alphabetically within categories
+  if (!response.ok) {
+  return "Uncategorized";
+}
+
+  const data = await response.json();
+  if (!data.categories || data.categories.length === 0) {
+  return "Uncategorized";
+}
+
+  return data.categories[0];
+} catch (error) {
+  return "Uncategorized";
+}
+}
+
+  async function categorizeTabs() {
+  const tabs = await chrome.tabs.query({});
+  const categorizedTabs = await Promise.all(
+  tabs.map(async (tab) => {
+  if (!tab.url) {
+  return { ...tab, category: "Uncategorized" };
+}
+
+  const category = await getWebsiteCategory(tab.url);
+  return { ...tab, category };
+})
+  );
+
   const collator = new Intl.Collator();
   categorizedTabs.sort((a, b) => collator.compare(a.title, b.title));
 
-  // Group tabs by category
   const groupedTabs = {};
   categorizedTabs.forEach((tab) => {
-    if (!groupedTabs[tab.category]) {
-      groupedTabs[tab.category] = [];
-    }
-    groupedTabs[tab.category].push(tab);
-  });
+  if (!groupedTabs[tab.category]) {
+  groupedTabs[tab.category] = [];
+}
+  groupedTabs[tab.category].push(tab);
+});
 
-  console.log("Final grouped tabs:", groupedTabs);
-
-  // Update UI with categorized tabs
   updatePopupUI(groupedTabs);
 }
 
-// Function to update popup UI
-function updatePopupUI(groupedTabs) {
-  console.log("Updating popup UI...");
-
+  function updatePopupUI(groupedTabs) {
   const ul = document.querySelector("ul");
-  ul.innerHTML = ""; // Clear previous elements
+  ul.innerHTML = "";
 
   Object.entries(groupedTabs).forEach(([category, tabs]) => {
-    console.log(`Adding category to UI: ${category}`);
+  const categoryHeader = document.createElement("h3");
+  categoryHeader.textContent = category;
+  ul.appendChild(categoryHeader);
 
-    const categoryHeader = document.createElement("h3");
-    categoryHeader.textContent = category;
-    ul.appendChild(categoryHeader);
+  const template = document.getElementById("li_template");
 
-    const template = document.getElementById("li_template");
+  for (const tab of tabs) {
+  const element = template.content.firstElementChild.cloneNode(true);
+  element.querySelector(".title").textContent = tab.title;
+  element.querySelector(".pathname").textContent = new URL(tab.url).pathname;
+  element.querySelector("a").addEventListener("click", async () => {
+  await chrome.tabs.update(tab.id, { active: true });
+  await chrome.windows.update(tab.windowId, { focused: true });
+});
 
-    for (const tab of tabs) {
-      console.log(`Adding tab to UI: ${tab.title} under "${category}"`);
-
-      const element = template.content.firstElementChild.cloneNode(true);
-      element.querySelector(".title").textContent = tab.title;
-      element.querySelector(".pathname").textContent = new URL(tab.url).pathname;
-      element.querySelector("a").addEventListener("click", async () => {
-        await chrome.tabs.update(tab.id, { active: true });
-        await chrome.windows.update(tab.windowId, { focused: true });
-      });
-
-      ul.appendChild(element);
-    }
-  });
+  ul.appendChild(element);
+}
+});
 }
 
-// Function to group tabs in Chrome by category
-async function groupTabsByCategory() {
-  console.log("Grouping tabs in Chrome...");
-
+  async function groupTabsByCategory() {
   const tabs = await chrome.tabs.query({});
   const groupedTabs = {};
 
-  // Fetch categories for each tab
   for (const tab of tabs) {
-    if (!tab.url) continue;
+  if (!tab.url) continue;
 
-    if (!groupedTabs[category]) {
-      groupedTabs[category] = [];
-    }
-    groupedTabs[category].push(tab.id);
-  }
+  const category = await getWebsiteCategory(tab.url);
 
-  console.log("Tabs grouped by category:", groupedTabs);
-
-  // Group tabs in Chrome
-  for (const [category, tabIds] of Object.entries(groupedTabs)) {
-    if (tabIds.length) {
-      try {
-        console.log(`Creating Chrome tab group: "${category}" with ${tabIds.length} tabs.`);
-        const group = await chrome.tabs.group({ tabIds });
-        await chrome.tabGroups.update(group, { title: category });
-      } catch (err) {
-        console.error(`Error grouping "${category}":`, err);
-      }
-    }
-  }
+  if (!groupedTabs[category]) {
+  groupedTabs[category] = [];
+}
+  groupedTabs[category].push(tab.id);
 }
 
-document.addEventListener("DOMContentLoaded", () => {
-  chrome.runtime.sendMessage({ action: "categorizeTabs" });
-  categorizeTabs();
+  for (const [category, tabIds] of Object.entries(groupedTabs)) {
+  if (tabIds.length) {
+  try {
+  const group = await chrome.tabs.group({ tabIds });
+  await chrome.tabGroups.update(group, { title: category });
+} catch (err) {
+  console.error(`Error grouping "${category}":`, err);
+}
+}
+}
+}
 
-  // Attach event listener to button for tab grouping
-  const groupButton = document.querySelector("button#group-tabs");
-  groupButton.addEventListener("click", groupTabsByCategory);
+  document.addEventListener("DOMContentLoaded", categorizeTabs);
 
-  // Attach event listener to button for opening the website
-  const openWebsiteButton = document.querySelector("button#open-website");
-  openWebsiteButton.addEventListener("click", () => {
-    chrome.tabs.create({ url: "https://teddy-tabber.vercel.app" });
-  });
+  const button = document.querySelector("button");
+  button.addEventListener("click", groupTabsByCategory);
+
+  document.addEventListener('DOMContentLoaded', () => {
+  const checkboxes = document.querySelectorAll('.checkbox');
+
+  checkboxes.forEach(checkbox => {
+  checkbox.addEventListener('click', () => {
+  checkbox.classList.toggle('checked');
 });
+});
+});
+
+  function checkAll() {
+    document.querySelectorAll('.checkbox-item input[type="checkbox"]').forEach(cb => cb.checked = true);
+  }
+  function uncheckAll() {
+    document.querySelectorAll('.checkbox-item input[type="checkbox"]').forEach(cb => cb.checked = false);
+  }

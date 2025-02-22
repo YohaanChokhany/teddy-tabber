@@ -1,11 +1,8 @@
 chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
-    if (message.action === "categorizeTabs") {
-        categorizeTabs();
-        sendResponse({ status: "Tabs categorized" });
+    if (message.action === "fetchTabs") {
+        chrome.tabs.query({}, (tabs) => {
+            sendResponse(tabs);
+        });
+        return true; // Keep the message channel open for sendResponse
     }
 });
-
-async function categorizeTabs() {
-    const tabs = await chrome.tabs.query({});
-    console.log("Categorizing tabs:", tabs);
-}

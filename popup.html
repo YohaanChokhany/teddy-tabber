@@ -4,124 +4,21 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=300, initial-scale=1.0">
   <title>Simple Tab Manager UI</title>
-  <style>
-    /* Basic Page Styling */
-    body {
-      font-family: Arial, sans-serif;
-      background-color: #f3d9c3;
-      margin: 0;
-      padding: 0;
-      box-sizing: border-box;
-    }
-
-    /* Container for the whole app */
-    .container {
-      min-width: 300px;
-      min-height: 400px;
-      padding: 16px;
-    }
-
-    /* Header Section with Bear and Menu Icon */
-    .header {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-    }
-
-    .bear-icon {
-      width: 50px;
-    }
-
-    .menu-icon {
-      width: 24px;
-      height: 24px;
-      background-color: #d3926e;
-      border-radius: 50%;
-    }
-
-    /* Stats Display for Tabs Open and Tab Points */
-    .stats {
-      display: flex;
-      justify-content: space-between;
-      margin: 20px 0;
-    }
-
-    .stat-box {
-      flex: 1;
-      background-color: #f3d9c3;
-      border: 2px solid #d3926e;
-      padding: 10px;
-      text-align: center;
-      border-radius: 8px;
-      margin: 0 4px;
-    }
-
-    .stat-box h1 {
-      margin: 8px 0;
-      font-size: 2em;
-    }
-
-    /* Tab List Section */
-    .tabs-list {
-      margin: 20px 0;
-    }
-
-    .tab-item {
-      display: flex;
-      align-items: center;
-      padding: 8px;
-      border: 1px solid #d3926e;
-      border-radius: 8px;
-      margin: 4px 0;
-    }
-
-    .tab-icon {
-      width: 24px;
-      margin-right: 8px;
-    }
-
-    /* Daily Challenges Section */
-    .challenges {
-      margin-top: 20px;
-    }
-
-    .challenge-item {
-      display: flex;
-      align-items: center;
-      padding: 8px;
-      border: 1px solid #d3926e;
-      border-radius: 8px;
-      margin: 4px 0;
-    }
-
-    .checkbox {
-      width: 24px;
-      height: 24px;
-      border: 2px solid #d3926e;
-      border-radius: 4px;
-      margin-right: 8px;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-    }
-
-    .checkbox.checked {
-      background-color: #d3926e;
-    }
-  </style>
+  <!-- <link rel="stylesheet" href="popup.css"> -->
+  <!-- <script src="popup.js" defer></script> -->
 </head>
 <body>
 <div class="container">
-  <!-- Header Section -->
   <div class="header">
-    <img src="https://bear-necessities-hackathon.my.canva.site/" class="bear-icon" alt="Bear Icon">
-    <div class="menu-icon"></div>
+    <img src="images/bear_hi_wave_1.png" class="bear-icon" alt="Bear Icon">
+    <div class="menu-icon">
+        <img src="images/menu-burger.png" alt="Menu Icon">
+    </div>
   </div>
 
-  <!-- Stats Section -->
   <div class="stats">
     <div class="stat-box">
-      <p>Tab Open</p>
+      <p>Tabs Open</p>
       <h1>15</h1>
     </div>
     <div class="stat-box">
@@ -130,7 +27,6 @@
     </div>
   </div>
 
-  <!-- Tabs List Section -->
   <div class="tabs-list">
     <h3>Tabs List</h3>
     <div class="tab-item"><div class="tab-icon">🔴</div>youtube.com</div>
@@ -140,24 +36,324 @@
     <div class="tab-item"><div class="tab-icon">🔴</div>netflix.com</div>
   </div>
 
-  <!-- Daily Challenges Section -->
-  <div class="challenges">
-    <h3>Daily Challenges</h3>
-    <div class="challenge-item"><div class="checkbox checked"></div>Close 10 tabs</div>
-    <div class="challenge-item"><div class="checkbox"></div>Group tabs</div>
-    <div class="challenge-item"><div class="checkbox"></div>Sort 3 tabs into education</div>
+  <div class="container">
+    <h2>Daily Challenges</h2>
+    <div class="checkbox-list">
+      <div class="checkbox-item">
+        <input type="checkbox" id="item1">
+        <label for="item1">Close 10 tabs</label>
+      </div>
+      <div class="checkbox-item">
+        <input type="checkbox" id="item2">
+        <label for="item2">Group tabs</label>
+      </div>
+      <div class="checkbox-item">
+        <input type="checkbox" id="item3">
+        <label for="item3">Sort 3 tabs into education</label>
+      </div>
+    </div>
   </div>
 
-  <button id="open-website">Open BearNecessities Website</button>
-</div>
+  <div class="container">
 
-<!-- Optional JavaScript for Checkbox Toggle -->
-<script>
-  document.querySelectorAll('.checkbox').forEach(checkbox => {
-    checkbox.addEventListener('click', () => {
-      checkbox.classList.toggle('checked');
-    });
-  });
-</script>
+    <div class="container">
+      <button id="fetch-tabs">Fetch Open Tabs</button>
+      <div id="tabs-display"></div>
+    </div>
+  </div>
+
+</div>
 </body>
 </html>
+
+<script>
+
+  const API_KEY = "2JYy39h8h79EgyLnvPL6bZjdAzTME";
+  const API_URL = "https://website-categorization.whoisxmlapi.com/api/v2";
+
+  async function getWebsiteCategory(url) {
+    try {
+      const domain = new URL(url).hostname;
+      const response = await fetch(
+              `${API_URL}?apiKey=${API_KEY}&domain=${encodeURIComponent(domain)}`,
+              { method: "GET" }
+      );
+
+      if (!response.ok) {
+        return "Uncategorized";
+      }
+
+      const data = await response.json();
+      if (!data.categories || data.categories.length === 0) {
+        return "Uncategorized";
+      }
+
+      return data.categories[0];
+    } catch (error) {
+      return "Uncategorized";
+    }
+  }
+
+  document.getElementById('fetch-tabs').addEventListener('click', () => {
+    chrome.runtime.sendMessage({ action: "fetchTabs" }, (tabs) => {
+      if (chrome.runtime.lastError) {
+        console.error(chrome.runtime.lastError.message);
+        return;
+      }
+
+      const tabsWithTimes = tabs.map(tab => ({
+        title: tab.title,
+        url: tab.url,
+        openTime: Date.now() - tab.lastAccessed
+      }));
+
+      tabsWithTimes.sort((a, b) => b.openTime - a.openTime);
+      const topTabs = tabsWithTimes.slice(0, 3);
+
+      const display = document.getElementById('tabs-display');
+      display.innerHTML = topTabs.map(tab => `
+            <div>
+                <p><strong>Title:</strong> ${tab.title}</p>
+                <p><strong>URL:</strong> ${tab.url}</p>
+                <p><strong>Open for:</strong> ${Math.floor(tab.openTime / 1000)} seconds</p>
+            </div>
+        `).join('');
+    });
+  });
+
+
+  async function categorizeTabs() {
+    const tabs = await chrome.tabs.query({});
+    const categorizedTabs = await Promise.all(
+            tabs.map(async (tab) => {
+              if (!tab.url) {
+                return { ...tab, category: "Uncategorized" };
+              }
+
+              const category = await getWebsiteCategory(tab.url);
+              return { ...tab, category };
+            })
+    );
+
+    const collator = new Intl.Collator();
+    categorizedTabs.sort((a, b) => collator.compare(a.title, b.title));
+
+    const groupedTabs = {};
+    categorizedTabs.forEach((tab) => {
+      if (!groupedTabs[tab.category]) {
+        groupedTabs[tab.category] = [];
+      }
+      groupedTabs[tab.category].push(tab);
+    });
+
+    updatePopupUI(groupedTabs);
+  }
+
+  function updatePopupUI(groupedTabs) {
+    const ul = document.querySelector("ul");
+    ul.innerHTML = "";
+
+    Object.entries(groupedTabs).forEach(([category, tabs]) => {
+      const categoryHeader = document.createElement("h3");
+      categoryHeader.textContent = category;
+      ul.appendChild(categoryHeader);
+
+      const template = document.getElementById("li_template");
+
+      for (const tab of tabs) {
+        const element = template.content.firstElementChild.cloneNode(true);
+        element.querySelector(".title").textContent = tab.title;
+        element.querySelector(".pathname").textContent = new URL(tab.url).pathname;
+        element.querySelector("a").addEventListener("click", async () => {
+          await chrome.tabs.update(tab.id, { active: true });
+          await chrome.windows.update(tab.windowId, { focused: true });
+        });
+
+        ul.appendChild(element);
+      }
+    });
+  }
+
+  async function groupTabsByCategory() {
+    const tabs = await chrome.tabs.query({});
+    const groupedTabs = {};
+
+    for (const tab of tabs) {
+      if (!tab.url) continue;
+
+      const category = await getWebsiteCategory(tab.url);
+
+      if (!groupedTabs[category]) {
+        groupedTabs[category] = [];
+      }
+      groupedTabs[category].push(tab.id);
+    }
+
+    for (const [category, tabIds] of Object.entries(groupedTabs)) {
+      if (tabIds.length) {
+        try {
+          const group = await chrome.tabs.group({ tabIds });
+          await chrome.tabGroups.update(group, { title: category });
+        } catch (err) {
+          console.error(`Error grouping "${category}":`, err);
+        }
+      }
+    }
+  }
+
+  document.addEventListener("DOMContentLoaded", categorizeTabs);
+
+  const button = document.querySelector("button");
+  button.addEventListener("click", groupTabsByCategory);
+
+  document.addEventListener('DOMContentLoaded', () => {
+    const checkboxes = document.querySelectorAll('.checkbox');
+
+    checkboxes.forEach(checkbox => {
+      checkbox.addEventListener('click', () => {
+        checkbox.classList.toggle('checked');
+      });
+    });
+  });
+
+  function checkAll() {
+    document.querySelectorAll('.checkbox-item input[type="checkbox"]').forEach(cb => cb.checked = true);
+  }
+  function uncheckAll() {
+    document.querySelectorAll('.checkbox-item input[type="checkbox"]').forEach(cb => cb.checked = false);
+  }
+</script>
+
+<style>
+  body {
+    font-family: Arial, sans-serif;
+    background-color: #f3d9c3;
+    margin: 0;
+    padding: 20px;
+    width: 325px;
+    height: 425px;
+    overflow: hidden; /* Prevents overflow and keeps the size fixed */
+    box-sizing: border-box;
+  }
+
+  .container {
+    width: 100%;
+    height: 100%;
+    overflow-y: auto; /* Adds scroll if content overflows */
+    box-sizing: border-box;
+  }
+
+  .checkbox-list {
+    max-width: 400px;
+    margin: 0 auto;
+    padding: 20px;
+    background: white;
+    border-radius: 8px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  }
+  .checkbox-item {
+    display: flex;
+    align-items: center;
+    margin-bottom: 10px;
+  }
+  input[type="checkbox"] {
+    appearance: none;
+    width: 20px;
+    height: 20px;
+    border: 2px solid #d3926e;
+    border-radius: 4px;
+    margin-right: 10px;
+    transition: all 0.2s;
+    cursor: pointer;
+  }
+  input[type="checkbox"]:checked {
+    background-color: #d3926e;
+    border-color: #d3926e;
+  }
+  input[type="checkbox"]:checked::after {
+    content: "✔";
+    color: white;
+    font-size: 14px;
+    display: block;
+    text-align: center;
+    line-height: 20px;
+  }
+  label {
+    color: #333;
+    font-size: 16px;
+  }
+  .menu-icon img {
+    width: 30px; /* Explicit width */
+    height: auto; /* Maintain aspect ratio */
+    max-width: 100%; /* Prevent overflow */
+  }
+
+  .header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 0 10px;
+  }
+
+  .bear-icon {
+    width: 40px; /* Make the bear fit within the menu-icon */
+    height: auto; /* Maintain aspect ratio */
+    padding: 0;
+  }
+
+  .stat-box {
+    background-color: #f3d9c3;
+    border-radius: 12px; /* Makes the box rounded */
+    padding: 10px 20px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    min-width: 80px; /* Ensures a consistent size */
+    margin: 8px; /* Adds space between the boxes */
+    border: 2px solid #d3926e; /* Set border width, style, and color */
+    margin-left: 4px;
+
+
+
+  }
+
+
+  .stats {
+    display: flex;
+    justify-content: space-between;
+    padding: 10px;
+  }
+
+  .stat-box p {
+    margin: 0;
+    font-size: 14px;
+    color: #333;
+  }
+
+  .stat-box h1 {
+    margin: 5px 0 0;
+    font-size: 24px;
+    color: #d3926e;
+  }
+
+  #fetch-tabs {
+    display: block;
+    margin: 20px auto;
+    padding: 10px 20px;
+    background-color: #d3926e;
+    color: white;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+  }
+
+  #tabs-display {
+    margin-top: 20px;
+    background: white;
+    border-radius: 8px;
+    padding: 20px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  }
+
+</style>
