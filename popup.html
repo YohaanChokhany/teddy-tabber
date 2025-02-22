@@ -1,25 +1,161 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="en">
-  <head>
-    <meta charset="UTF-8" />
-    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <link rel="stylesheet" href="./popup.css" />
-  </head>
-  <body style="background-color:#eed9c4;" >
-    <template id="li_template">
-      <li>
-        <a>
-          <h3 class="title">Tab Title</h3>
-          <p class="pathname">Tab Pathname</p>
-        </a>
-      </li>
-    </template>
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=300, initial-scale=1.0">
+  <title>Simple Tab Manager UI</title>
+  <style>
+    /* Basic Page Styling */
+    body {
+      font-family: Arial, sans-serif;
+      background-color: #f3d9c3;
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
 
-    <h1> Google Dev Docs</h1>
-    <button>Group Tabs</button>
-    <ul></ul>
+    /* Container for the whole app */
+    .container {
+      min-width: 300px;
+      min-height: 400px;
+      padding: 16px;
+    }
 
-    <script src="./popup.js" type="module"></script>
-  </body>
+    /* Header Section with Bear and Menu Icon */
+    .header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .bear-icon {
+      width: 50px;
+    }
+
+    .menu-icon {
+      width: 24px;
+      height: 24px;
+      background-color: #d3926e;
+      border-radius: 50%;
+    }
+
+    /* Stats Display for Tabs Open and Tab Points */
+    .stats {
+      display: flex;
+      justify-content: space-between;
+      margin: 20px 0;
+    }
+
+    .stat-box {
+      flex: 1;
+      background-color: #f3d9c3;
+      border: 2px solid #d3926e;
+      padding: 10px;
+      text-align: center;
+      border-radius: 8px;
+      margin: 0 4px;
+    }
+
+    .stat-box h1 {
+      margin: 8px 0;
+      font-size: 2em;
+    }
+
+    /* Tab List Section */
+    .tabs-list {
+      margin: 20px 0;
+    }
+
+    .tab-item {
+      display: flex;
+      align-items: center;
+      padding: 8px;
+      border: 1px solid #d3926e;
+      border-radius: 8px;
+      margin: 4px 0;
+    }
+
+    .tab-icon {
+      width: 24px;
+      margin-right: 8px;
+    }
+
+    /* Daily Challenges Section */
+    .challenges {
+      margin-top: 20px;
+    }
+
+    .challenge-item {
+      display: flex;
+      align-items: center;
+      padding: 8px;
+      border: 1px solid #d3926e;
+      border-radius: 8px;
+      margin: 4px 0;
+    }
+
+    .checkbox {
+      width: 24px;
+      height: 24px;
+      border: 2px solid #d3926e;
+      border-radius: 4px;
+      margin-right: 8px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .checkbox.checked {
+      background-color: #d3926e;
+    }
+  </style>
+</head>
+<body>
+<div class="container">
+  <!-- Header Section -->
+  <div class="header">
+    <img src="https://via.placeholder.com/50" class="bear-icon" alt="Bear Icon">
+    <div class="menu-icon"></div>
+  </div>
+
+  <!-- Stats Section -->
+  <div class="stats">
+    <div class="stat-box">
+      <p>Tab Open</p>
+      <h1>15</h1>
+    </div>
+    <div class="stat-box">
+      <p>Tab Points</p>
+      <h1>5</h1>
+    </div>
+  </div>
+
+  <!-- Tabs List Section -->
+  <div class="tabs-list">
+    <h3>Tabs List</h3>
+    <div class="tab-item"><div class="tab-icon">🔴</div>youtube.com</div>
+    <div class="tab-item"><div class="tab-icon">⚫</div>framer.edit.site</div>
+    <div class="tab-item"><div class="tab-icon">🟣</div>instagram.com</div>
+    <div class="tab-item"><div class="tab-icon">🟠</div>brightspace.edu</div>
+    <div class="tab-item"><div class="tab-icon">🔴</div>netflix.com</div>
+  </div>
+
+  <!-- Daily Challenges Section -->
+  <div class="challenges">
+    <h3>Daily Challenges</h3>
+    <div class="challenge-item"><div class="checkbox checked"></div>Close 10 tabs</div>
+    <div class="challenge-item"><div class="checkbox"></div>Group tabs</div>
+    <div class="challenge-item"><div class="checkbox"></div>Sort 3 tabs into education</div>
+  </div>
+</div>
+
+<!-- Optional JavaScript for Checkbox Toggle -->
+<script>
+  document.querySelectorAll('.checkbox').forEach(checkbox => {
+    checkbox.addEventListener('click', () => {
+      checkbox.classList.toggle('checked');
+    });
+  });
+</script>
+</body>
 </html>
