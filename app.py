@@ -1,75 +1,54 @@
-from flask import Flask, request, jsonify
-import requests
-from pymongo import MongoClient
-import datetime
+import google.generativeai as genai
+# Step 1: Configure the Gemini API
+API_KEY = "AIzaSyC3zDAbuPrj4okDnXmvpHRbqLKo3GywmrE"  # Replace with your actual API key
+genai.configure(api_key=API_KEY)
 
-app = Flask(__name__)
-
-@app.route('/')
-def home():
-    return "Welcome to Teddy Tabber! The API is running."
-
-# MongoDB Setup
-client = MongoClient("mongodb://localhost:27017/")
-db = client["TabTracker"]
-tabs_collection = db["tabs"]
-users_collection = db["users"]
-
-# Scoring System
-CATEGORY_SCORES = {
-    "Education": 5,
-    "Productivity": 5,
-    "Technology & Development": 2,
-    "Finance & Investments": 2,
-    "Health & Wellness": 2,
-    "Social Media": -5,
-    "Entertainment": -5,
-    "Gaming": -5
+# Step 2: Define the categories
+CATEGORIES = {
+    "education": 5,
+    "productivity": 5,
+    "technology & development": 2,
+    "finance & investments": 2,
+    "health & wellness": 2,
+    "social media": -5,
+    "entertainment": -5,
+    "gaming": -5,
 }
 
-API_KEY = "YOUR_WHOISXML_API_KEY"
-API_URL = "https://website-categorization.whoisxmlapi.com/api/v2"
+# Step 3: Function to classify tabs
+def categorize_tabs(tab_titles):
+    model = genai.GenerativeModel("gemini-1.5-flash")  # Adjust model version as needed
 
-@app.route('/process-tabs', methods=['POST'])
-def process_tabs():
-    data = request.json
-    urls = data["urls"]
-    user_id = data.get("user_id", "default_user")
+    # Construct the prompt
+    prompt = f"""
+    You are an AI that categorizes website tabs into predefined categories with scores:
+    {CATEGORIES}
 
-    total_score = 0
-    tab_entries = []
+    Given a list of tab titles, return the most suitable category for each.
 
-    for url in urls:
-        # Get category from API
-        response = requests.get(API_URL, params={"apiKey": API_KEY, "url": url})
-        category = response.json().get("categories", ["Unknown"])[0]
+    Example format:
+    - "Khan Academy - Learn Math" -> "education"
+    - "Stock Market News - Bloomberg" -> "finance & investments"
+    - "TikTok - Watch Videos" -> "social media"
 
-        # Assign score based on category
-        score = CATEGORY_SCORES.get(category, 0)
+    Tabs to categorize:
+    {tab_titles}
+    """
 
-        # Check if tab has been open for 2+ days
-        existing_tab = tabs_collection.find_one({"url": url})
-        if existing_tab:
-            days_open = (datetime.datetime.utcnow() - existing_tab["timestamp"]).days
-            if days_open >= 2:
-                score -= 2  # Deduct points for being open too long
+    # Generate AI response
+    response = model.generate_content(prompt)
 
-        # Store in DB
-        tab_entry = {
-            "url": url,
-            "category": category,
-            "score": score,
-            "timestamp": datetime.datetime.utcnow()
-        }
-        tabs_collection.update_one({"url": url}, {"$set": tab_entry}, upsert=True)
-        tab_entries.append(tab_entry)
+    return response.text
 
-        total_score += score
+# Step 4: Example usage
+tabs = [
+    "Khan Academy - Learn Math",
+    "Gmail - Inbox",
+    "GitHub - Open Source Projects",
+    "Netflix - Watch Movies",
+    "Yahoo Finance - Stock Prices",
+    "Fortnite - Play Now",
+]
 
-    # Update user score
-    users_collection.update_one({"_id": user_id}, {"$inc": {"total_score": total_score}}, upsert=True)
-
-    return jsonify({"status": "success", "tabs": tab_entries, "total_score": total_score})
-
-if __name__ == "__main__":
-    app.run(debug=True)
+categorized_tabs = categorize_tabs(tabs)
+print(categorized_tabs)
