@@ -9,8 +9,6 @@ const data = [
     { name: 'Health & Wellness', value: 6 },
     { name: 'Other', value: 7 }
 ]
-/**/
-
 const COLORS = ['#8B6F4E', '#B4A08F', '#DACBB7', '#EDE5DD', '#6E5C4A']
 function AnalyticsDashboard() {
     const lineData = useMemo(() => {
