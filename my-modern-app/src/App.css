@@ -130,4 +130,5 @@ account-text {
 body {
   margin: 0;
   font-family: sans-serif;
+  cursor: url('./assets/bear_paw.png'), auto;
 }

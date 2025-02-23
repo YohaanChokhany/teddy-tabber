@@ -1,22 +1,24 @@
 import React, { useState } from 'react'
 import { useAuth0 } from '@auth0/auth0-react'
+
 import '../styles/Navbar.css'
+import bearImage from '/../assets/bear_hi_wave_1.png';
 
 function Navbar() {
     const { isAuthenticated, user, logout, loginWithRedirect } = useAuth0()
     const [showDropdown, setShowDropdown] = useState(false)
-
     return (
         <nav className="navbar">
             <div className="navbar-brand">
+                <img src={bearImage} alt="Bear Logo" className="navbar-logo" />
                 <h2>Bear Necessities</h2>
             </div>
             <div className="navbar-buttons">
                 <button className="navbar-button" onClick={() => window.location.href = '/home'}>Home</button>
-                <button className="navbar-button" onClick={() => window.location.href = '/your-tab-management-stats'}>Analytics Dashboard</button>
+                <button className="navbar-button"
+                        onClick={() => window.location.href = '/your-tab-management-stats'}>Analytics Dashboard
+                </button>
                 <button className="navbar-button" onClick={() => window.location.href = '/about-us'}>About Us</button>
-
-                {/* Account Dropdown Section */}
                 <div className="account-dropdown">
                     <button className="navbar-button-account" onClick={() => setShowDropdown(!showDropdown)}>
                         Account

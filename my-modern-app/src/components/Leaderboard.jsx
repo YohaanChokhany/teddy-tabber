@@ -19,7 +19,7 @@ function Leaderboard() {
 
   return (
     <div className="leaderboard">
-      <h2>Global Leaderboard</h2>
+      <h1>Global Leaderboard</h1>
       
       <div className="podium-container">
         {podiumOrder.map(position => {

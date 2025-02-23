@@ -12,6 +12,7 @@ import './styles/Leaderboard.css'
 import './styles/AboutUs.css'
 import './styles/Analytics.css'
 
+
 import AnalyticsDashboard from './components/AnalyticsDashboard'
 
 
@@ -48,6 +49,10 @@ function App() {
         analyticsRef.current?.scrollIntoView({ behavior: 'smooth' })
     }
 
+    const scrollToHome = () => {
+        window.scrollTo({ top: 0, behavior: 'smooth' })
+    }
+
     if (isLoading) return (
         <div style={{ backgroundColor: '#f9f6f2', height: '100vh', display: 'flex', flexDirection: 'column', justifyContent: 'center', alignItems: 'center' }}>
             <img src={bearImage} alt="Loading..." style={{ width: '5rem', height: 'auto' }} />
@@ -56,14 +61,17 @@ function App() {
     );
     if (error) return <div>Oops... {error.message}</div>
 
+
+
     return (
         <div className="main-container">
             <div className="navbar">
                 <div className="navbar-brand">
+                    <img src={bearImage} alt="Bear Logo" className="navbar-logo"/>
                     <h2>Bear Necessities</h2>
                 </div>
                 <div className="navbar-buttons">
-                    <button className="navbar-button" onClick={() => window.location.href = '/home'}>Home</button>
+                <button className="navbar-button" onClick={scrollToHome}>Home</button>
                     <button className="navbar-button" onClick={scrollToAboutUs}>About Us</button>
                     <button className="navbar-button" onClick={scrollToAnalytics}>Data Analytics</button>
                 </div>
@@ -105,6 +113,7 @@ function App() {
             )}
         </div>
     )
+
 }
 
 export default App
