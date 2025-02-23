@@ -12,6 +12,7 @@ import './styles/Leaderboard.css'
 import './styles/AboutUs.css'
 import './styles/Analytics.css'
 
+
 import AnalyticsDashboard from './components/AnalyticsDashboard'
 
 
@@ -43,10 +44,11 @@ function App() {
         <div className="main-container">
             <div className="navbar">
                 <div className="navbar-brand">
+                    <img src={bearImage} alt="Bear Logo" className="navbar-logo"/>
                     <h2>Bear Necessities</h2>
                 </div>
                 <div className="navbar-buttons">
-                    <button className="navbar-button" onClick={() => window.location.href = '/home'}>Home</button>
+                <button className="navbar-button" onClick={() => window.location.href = '/home'}>Home</button>
                     <button className="navbar-button" onClick={scrollToAboutUs}>About Us</button>
                     <button className="navbar-button" onClick={scrollToAnalytics}>Data Analytics</button>
                 </div>

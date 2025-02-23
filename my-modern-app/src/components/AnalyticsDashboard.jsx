@@ -27,7 +27,7 @@ function AnalyticsDashboard() {
                 <div className="chart-card">
                     <h3>Data Analytics</h3>
 
-                    <h4>Tab Categories</h4>
+                    <h2>Tab Categories</h2>
                     <ResponsiveContainer width="100%" height={250}>
                         <PieChart>
                             <Pie data={data} cx="50%" cy="50%" outerRadius={80} fill="#8884d8" dataKey="value">
@@ -40,7 +40,7 @@ function AnalyticsDashboard() {
                     </ResponsiveContainer>
                 </div>
                 <div className="chart-card">
-                    <h4>Your Weekly Scores</h4>
+                    <h2>Your Weekly Scores</h2>
                     <ResponsiveContainer width="100%" height={250}>
                         <LineChart data={lineData}>
                             <XAxis dataKey="date" />
