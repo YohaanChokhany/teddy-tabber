@@ -1,0 +1,53 @@
+{
+    "results": [
+        {
+            "id": 1744086120,
+            "url": "https://www.amazon.com/Practical-Guide-Quantitative-Finance-Interviews/dp/1438236662",
+            "title": "Amazon.com: A Practical Guide To Quantitative Finance Interviews: 9781438236667: Zhou, Xinfeng: Books",
+            "category": "finance",
+            "score": 200,
+            "ip_address": "127.0.0.1"
+        },
+        {
+            "id": 1744086265,
+            "url": "chrome://extensions/?errors=mihchdkolhhdfklacfjkdlfjfbfnnhhg",
+            "title": "Extensions",
+            "category": "tech_and_dev",
+            "score": 200,
+            "ip_address": "127.0.0.1"
+        },
+        {
+            "id": 1744086283,
+            "url": "https://docs.google.com/document/d/1d-gAOvFkhlSqTF3He4wNPzwyNbEqp8MBma_b9_2BAKg/edit?tab=t.0",
+            "title": "teddy tabber - Google Docs",
+            "category": "education",
+            "score": 500,
+            "ip_address": "127.0.0.1"
+        },
+        {
+            "id": 1744086284,
+            "url": "https://purdue.brightspace.com/d2l/home/6824",
+            "title": "Homepage - Purdue West Lafayette",
+            "category": "education",
+            "score": 500,
+            "ip_address": "127.0.0.1"
+        },
+        {
+            "id": 1744086285,
+            "url": "https://purdue.brightspace.com/d2l/home/1227232",
+            "title": "Homepage - Spring 2025 STAT/MA 41600-004 LEC - Merge",
+            "category": "education",
+            "score": 500,
+            "ip_address": "127.0.0.1"
+        },
+        {
+            "id": 1744086331,
+            "url": "https://ai.google.dev/gemini-api/docs/function-calling/tutorial?lang=python",
+            "title": "Function calling tutorial \u00a0|\u00a0 Gemini API \u00a0|\u00a0 Google AI for Developers",
+            "category": "tech_and_dev",
+            "score": 200,
+            "ip_address": "127.0.0.1"
+        }
+    ],
+    "total_score": 2100
+}

@@ -15,6 +15,7 @@
       <option name="ignoredIdentifiers">
         <list>
           <option value="app.*" />
+          <option value="server.flask_cors" />
         </list>
       </option>
     </inspection_tool>

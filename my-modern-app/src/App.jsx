@@ -19,9 +19,24 @@ import AnalyticsDashboard from './components/AnalyticsDashboard'
 function App() {
     const { isLoading, isAuthenticated, error, user, logout } = useAuth0()
     const [showAccountPopup, setShowAccountPopup] = useState(false)
+    const [showAnalytics, setShowAnalytics] = useState(false)
+    const [ipAddress, setIpAddress] = useState('')
     const aboutUsRef = useRef(null)
     const analyticsRef = useRef(null)
-    const [analyticsKey, setAnalyticsKey] = useState(0)
+
+    useEffect(() => {
+        const fetchIpAddress = async () => {
+            try {
+                const response = await fetch('https://api.ipify.org?format=json')
+                const data = await response.json()
+                setIpAddress(data.ip)
+            } catch (error) {
+                console.error('Error fetching IP address:', error)
+            }
+        }
+
+        fetchIpAddress()
+    }, [])
 
     const scrollToAboutUs = () => {
         aboutUsRef.current?.scrollIntoView({ behavior: 'smooth' })
@@ -48,6 +63,7 @@ function App() {
                 </div>
                 <div className="navbar-buttons">
                     <button className="navbar-button" onClick={() => window.location.href = '/home'}>Home</button>
+                    <button className="navbar-button" onClick={() => window.location.href = '/your-tab-management-stats'}>Analytics Dashboard</button>
                     <button className="navbar-button" onClick={scrollToAboutUs}>About Us</button>
                     <button className="navbar-button" onClick={scrollToAnalytics}>Data Analytics</button>
                 </div>

@@ -60,7 +60,7 @@ input[type="checkbox"]:checked {
 }
 
 input[type="checkbox"]:checked::after {
-  content: "✔";
+  content: "";
   color: white;
   font-size: 14px;
   display: block;
@@ -129,15 +129,27 @@ label {
   color: #d3926e;
 }
 
-#fetch-tabs {
-  display: block;
-  margin: 20px auto;
+.daily-challenge-points {
+  color: #d3926e;
+  font-weight: 600;
+}
+
+#group-tabs {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-top: 5px;
+  margin-bottom: 5px;
+  margin-left: auto;
+  margin-right: auto;
   padding: 10px 20px;
   background-color: #d3926e;
   color: white;
+  font-weight: 600;
   border: none;
   border-radius: 8px;
   cursor: pointer;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
 }
 
 #tabs-display {

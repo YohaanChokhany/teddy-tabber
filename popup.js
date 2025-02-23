@@ -27,13 +27,16 @@ const updateBlurVisibility = () => {
 
 tabsList.addEventListener('scroll', updateBlurVisibility);
 
+let tabs = [];
+
 async function fetchAndCategorizeTabs() {
   try {
     // Get all tabs from all windows
-    const tabs = await chrome.tabs.query({});
+    tabs = await chrome.tabs.query({});
 
     // Format tabs data for the API
     const tabsData = tabs.map(tab => ({
+      id: tab.id,
       url: tab.url,
       title: tab.title
     }));
@@ -68,7 +71,7 @@ async function fetchAndCategorizeTabs() {
 
     // Clear existing tabs
     tabsList.innerHTML = '';
-
+    tabs = data.results;
     // Add categorized tabs to the list
     let tabPoints = 0;
     data.results.forEach(result => {
@@ -105,10 +108,53 @@ async function fetchAndCategorizeTabs() {
     if (tabsCountElement) {
       tabsCountElement.textContent = tabs.length;
     }
+
+    let numTabGroups = await new Promise(resolve => {
+      chrome.tabGroups.query({}, tabGroups => resolve(tabGroups.length));
+    });    
+
+    let challengePoints = 0;
+    const under10TabsChallenge = document.getElementById('under-10-tabs-challenge');
+    if (under10TabsChallenge) {
+      under10TabsChallenge.checked = tabs.length < 10;
+      const under10TabsChallengePoints = document.getElementById('under-10-tabs-challenge-points');
+      if (under10TabsChallengePoints) {
+        under10TabsChallengePoints.textContent = "+300";
+      }
+      if (under10TabsChallenge.checked) {
+        challengePoints += 300;
+      }
+    }
+
+    const educationalTabsChallenge = document.getElementById('educational-tabs-challenge');
+    if (educationalTabsChallenge) {
+      educationalTabsChallenge.checked = tabs.filter(tab => tab.category === 'education').length >= 3;
+      const educationalTabsChallengePoints = document.getElementById('educational-tabs-challenge-points');
+      if (educationalTabsChallengePoints) {
+        educationalTabsChallengePoints.textContent = "+300";
+      }
+      if (educationalTabsChallenge.checked) {
+        challengePoints += 300;
+      }
+    }
+    const groupTabsChallenge = document.getElementById('group-tabs-challenge');
+    if (groupTabsChallenge) {
+      groupTabsChallenge.checked = numTabGroups > 0;
+      const groupTabsChallengePoints = document.getElementById('group-tabs-challenge-points');
+      if (groupTabsChallengePoints) {
+        groupTabsChallengePoints.textContent = "+300";
+      }
+      if (groupTabsChallenge.checked) {
+        challengePoints += 300;
+      }
+    }
+
+    tabPoints += challengePoints;
     const tabPointsElement = document.getElementById("tab-points");
     if (tabPointsElement) {
       tabPointsElement.textContent = tabPoints;
     }
+
     document.getElementById('content').style.opacity = '1';
   } catch (error) {
     console.error('Error in fetchAndCategorizeTabs:', error);
@@ -147,8 +193,92 @@ function getCategoryEmoji(category) {
   return emojiMap[category] || '🔴';
 }
 
+function getCategoryName(category) {
+  const emojiMap = {
+    'education': 'Education',
+    'entertainment': 'Entertainment',
+    'productivity': 'Productivity',
+    'tech_and_dev': 'Tech & Dev',
+    'finance': 'Finance',
+    'health_and_wellness': 'Health & Wellness',
+    'social_media': 'Social Media',
+    'shopping': 'Shopping',
+    'gaming': 'Gaming',
+  };
+  return emojiMap[category] || '';
+}
+
+function getCategoryColor(category) {
+  const emojiMap = {
+    'education': 'red',
+    'entertainment': 'orange',
+    'productivity': 'yellow',
+    'tech_and_dev': 'green',
+    'finance': 'blue',
+    'health_and_wellness': 'grey',
+    'social_media': 'purple',
+    'shopping': 'pink',
+    'gaming': 'cyan',
+  };
+  return emojiMap[category] || '';
+}
+
 // Add click handler to the fetch-tabs button
-document.getElementById('fetch-tabs').addEventListener('click', fetchAndCategorizeTabs);
+document.getElementById('group-tabs').addEventListener('click', groupTabsByCategory);
+
+async function groupTabsByCategory() {
+  const groupedTabs = {};
+
+  for (const tab of tabs) {
+    if (!tab.url) continue;
+
+    const category = tab.category;
+
+    if (!groupedTabs[category]) {
+      groupedTabs[category] = [];
+    }
+    groupedTabs[category].push(tab.id);
+  }
+
+  console.log(groupedTabs);
+
+  for (const [category, tabIds] of Object.entries(groupedTabs)) {
+    if (category == "other") continue;
+    if (tabIds.length) {
+      try {
+        const group = await chrome.tabs.group({ tabIds });
+        await chrome.tabGroups.update(group, { title: getCategoryName(category), color: getCategoryColor(category) });
+      } catch (err) {
+        console.error(`Error grouping "${category}":`, err);
+      }
+    }
+  }
+
+  let numTabGroups = await new Promise(resolve => {
+    chrome.tabGroups.query({}, tabGroups => resolve(tabGroups.length));
+  });
+
+  const groupTabsChallenge = document.getElementById('group-tabs-challenge');
+  let challengePoints = 0;
+  if (groupTabsChallenge) {
+    groupTabsChallenge.checked = numTabGroups > 0;
+    const groupTabsChallengePoints = document.getElementById('group-tabs-challenge-points');
+    if (groupTabsChallengePoints) {
+      groupTabsChallengePoints.textContent = "+300";
+    }
+    if (groupTabsChallenge.checked) {
+      challengePoints = 300;
+    }
+  }
+
+  const tabPointsElement = document.getElementById("tab-points");
+  let tabPoints = parseInt(tabPointsElement.textContent, 10);
+  tabPoints += challengePoints;
+  if (tabPointsElement) {
+    tabPointsElement.textContent = tabPoints;
+  }
+}
+
 
 // Fetch tabs when popup opens
 document.addEventListener('DOMContentLoaded', fetchAndCategorizeTabs);
@@ -203,33 +333,6 @@ function updatePopupUI(groupedTabs) {
       ul.appendChild(element);
     }
   });
-}
-
-async function groupTabsByCategory() {
-  const tabs = await chrome.tabs.query({});
-  const groupedTabs = {};
-
-  for (const tab of tabs) {
-    if (!tab.url) continue;
-
-    const category = await getWebsiteCategory(tab.url);
-
-    if (!groupedTabs[category]) {
-      groupedTabs[category] = [];
-    }
-    groupedTabs[category].push(tab.id);
-  }
-
-  for (const [category, tabIds] of Object.entries(groupedTabs)) {
-    if (tabIds.length) {
-      try {
-        const group = await chrome.tabs.group({ tabIds });
-        await chrome.tabGroups.update(group, { title: category });
-      } catch (err) {
-        console.error(`Error grouping "${category}":`, err);
-      }
-    }
-  }
 }
 
 document.addEventListener("DOMContentLoaded", fetchAndCategorizeTabs);

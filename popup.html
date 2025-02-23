@@ -17,7 +17,7 @@
         </a>
     </div>
   </div>
-  <div id="content" style="opacity: 0;">
+  <div id="content" style="opacity: 0; background-color: #F3D9C3;">
     <div class="stats">
       <div class="stat-box">
         <p>Tabs Open</p>
@@ -27,6 +27,10 @@
         <p>Tab Points</p>
         <h1 id="tab-points">5</h1>
       </div>
+    </div>
+
+    <div class="container">
+      <button id="group-tabs"><img src="images/gemini.png" alt="Group Icon" style="width: 20px; height: 20px; margin-right: 5px;"> Group Tabs</button>
     </div>
 
     <div class="container">
@@ -47,24 +51,21 @@
       <h2>Daily Challenges</h2>
       <div class="checkbox-list">
         <div class="checkbox-item">
-          <input type="checkbox" id="item1">
-          <label for="item1">Close 10 tabs</label>
+          <input type="checkbox" id="under-10-tabs-challenge" disabled >
+          <label for="item1">Have under 10 tabs open <span id="under-10-tabs-challenge-points" class="daily-challenge-points"></span></label>
         </div>
         <div class="checkbox-item">
-          <input type="checkbox" id="item2">
-          <label for="item2">Group tabs</label>
+          <input type="checkbox" id="group-tabs-challenge" disabled>
+          <label for="item2">Group tabs <span id="group-tabs-challenge-points" class="daily-challenge-points"></span></label>
         </div>
         <div class="checkbox-item">
-          <input type="checkbox" id="item3">
-          <label for="item3">Sort 3 tabs into education</label>
+          <input type="checkbox" id="educational-tabs-challenge" disabled>
+          <label for="item3">Open 3 Educational Tabs <span id="educational-tabs-challenge-points" class="daily-challenge-points"></span></label>
         </div>
       </div>
     </div>
-
-    <div class="container">
-      <button id="fetch-tabs">Fetch Open Tabs</button>
-    </div>
   </div>
+  <img src="images/wave.gif" alt="An animated GIF" style="position: absolute; bottom: 25%; left: 25%; width: 50%; height: 50%; z-index: -1;">
 </div>
 <script src="./popup.js" type="module"></script>
 </body>
