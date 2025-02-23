@@ -17,6 +17,7 @@ import './styles/Analytics.css'
 
 import AnalyticsDashboard from './components/AnalyticsDashboard'
 
+
 function App() {
     const { isLoading, isAuthenticated, error, user, logout } = useAuth0()
     const [showAccountPopup, setShowAccountPopup] = useState(false)

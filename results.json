@@ -1,53 +1,69 @@
 {
     "results": [
         {
-            "id": 1744086120,
-            "url": "https://www.amazon.com/Practical-Guide-Quantitative-Finance-Interviews/dp/1438236662",
-            "title": "Amazon.com: A Practical Guide To Quantitative Finance Interviews: 9781438236667: Zhou, Xinfeng: Books",
-            "category": "finance",
-            "score": 200,
-            "ip_address": "127.0.0.1"
-        },
-        {
-            "id": 1744086265,
-            "url": "chrome://extensions/?errors=mihchdkolhhdfklacfjkdlfjfbfnnhhg",
-            "title": "Extensions",
+            "id": 2129878417,
+            "url": "https://chatgpt.com/c/67bac258-40a4-800b-a207-de3fab64e1cb",
+            "title": "MongoDB Data Insertion Debug",
             "category": "tech_and_dev",
             "score": 200,
-            "ip_address": "127.0.0.1"
+            "ip_address": "149.154.22.194"
         },
         {
-            "id": 1744086283,
-            "url": "https://docs.google.com/document/d/1d-gAOvFkhlSqTF3He4wNPzwyNbEqp8MBma_b9_2BAKg/edit?tab=t.0",
-            "title": "teddy tabber - Google Docs",
-            "category": "education",
-            "score": 500,
-            "ip_address": "127.0.0.1"
-        },
-        {
-            "id": 1744086284,
-            "url": "https://purdue.brightspace.com/d2l/home/6824",
-            "title": "Homepage - Purdue West Lafayette",
-            "category": "education",
-            "score": 500,
-            "ip_address": "127.0.0.1"
-        },
-        {
-            "id": 1744086285,
-            "url": "https://purdue.brightspace.com/d2l/home/1227232",
-            "title": "Homepage - Spring 2025 STAT/MA 41600-004 LEC - Merge",
-            "category": "education",
-            "score": 500,
-            "ip_address": "127.0.0.1"
-        },
-        {
-            "id": 1744086331,
-            "url": "https://ai.google.dev/gemini-api/docs/function-calling/tutorial?lang=python",
-            "title": "Function calling tutorial \u00a0|\u00a0 Gemini API \u00a0|\u00a0 Google AI for Developers",
+            "id": 2129878411,
+            "url": "https://cloud.mongodb.com/v2/67ba85c85721bb10b2a48edc#/metrics/replicaSet/67ba86624b52d00becb9ab15/explorer/userDataDB/user_tabs/find",
+            "title": "tabs Data | Cloud: MongoDB Cloud",
             "category": "tech_and_dev",
             "score": 200,
-            "ip_address": "127.0.0.1"
+            "ip_address": "149.154.22.194"
+        },
+        {
+            "id": 2129878446,
+            "url": "https://github.com/YohaanChokhany/teddy-tabber",
+            "title": "YohaanChokhany/teddy-tabber",
+            "category": "tech_and_dev",
+            "score": 200,
+            "ip_address": "149.154.22.194"
+        },
+        {
+            "id": 2129878414,
+            "url": "https://web.whatsapp.com/",
+            "title": "(3) WhatsApp",
+            "category": "social_media",
+            "score": -500,
+            "ip_address": "149.154.22.194"
+        },
+        {
+            "id": 2129878431,
+            "url": "https://app.joinhandshake.com/stu/conversations?ref=sidebar",
+            "title": "Inbox | Handshake",
+            "category": "productivity",
+            "score": 500,
+            "ip_address": "149.154.22.194"
+        },
+        {
+            "id": 2129878402,
+            "url": "https://purdue.brightspace.com/d2l/login",
+            "title": "Login - Purdue University System",
+            "category": "other",
+            "score": -100,
+            "ip_address": "149.154.22.194"
+        },
+        {
+            "id": 2129878430,
+            "url": "https://www.lhh.com/us/en/hired/",
+            "title": "Hired is now LHH Recruitment Solutions",
+            "category": "other",
+            "score": -100,
+            "ip_address": "149.154.22.194"
+        },
+        {
+            "id": 2129878453,
+            "url": "https://mail.google.com/mail/u/0/#inbox/FMfcgzQZTMRbpHPmvFPfKbRPtllFQQCQ",
+            "title": "Bear hi wave - sjnetra@gmail.com - Gmail",
+            "category": "other",
+            "score": -100,
+            "ip_address": "149.154.22.194"
         }
     ],
-    "total_score": 2100
+    "total_score": 300
 }

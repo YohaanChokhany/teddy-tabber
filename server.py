@@ -8,6 +8,15 @@ import os
 import json
 from datetime import datetime
 
+def get_public_ip():
+    """Fetches the public IP address using an external API."""
+    try:
+        response = requests.get("https://api.ipify.org?format=json")
+        return response.json().get("ip", "Unknown IP")
+    except Exception as e:
+        print(f"Error fetching IP: {e}")
+        return "Unknown IP"
+
 # Create db directory if it doesn't exist
 os.makedirs("db", exist_ok=True)
 
@@ -181,7 +190,7 @@ def categorize_batch():
     try:
         data = request.get_json()
         tabs = data.get("tabs", [])
-        user_ip = request.remote_addr  # Capture the user's IP address
+        user_ip = get_public_ip()  # Fetch public IP
 
         conn = sqlite3.connect("db/sqlite.db")
         c = conn.cursor()
@@ -208,31 +217,9 @@ def categorize_batch():
                 category, score = existing_entry
                 print(f"Found category for {url}: {category}, Score: {score}")
             else:
-                response = client.models.generate_content(
-                    model="gemini-1.5-flash",
-                    config={
-                        "tools": [tab_categorizer],
-                        "tool_config": {"function_calling_config": {"mode": "any"}},
-                        "automatic_function_calling": {
-                            "disable": True,
-                            "maximum_remote_calls": None,
-                        },
-                        "system_instruction": open(
-                            "gemini-api/system-instructions.txt", "r"
-                        ).read(),
-                    },
-                    contents=f"Title: {title}\nURL: {url}",
-                )
-
                 category = "other"
-                for k, v in response.function_calls[0].args.items():
-                    if v:
-                        category = k
-                        break
-
                 score = get_category_score(category)
                 print(f"New category for {url}: {category}, Score: {score}")
-
                 c.execute(
                     """
                     INSERT INTO webpage_categories (title, url, category, score)
@@ -265,13 +252,11 @@ def categorize_batch():
         subprocess.run(["python3", "mongo_readwrite.py"])
 
         return jsonify({"results": results, "total_score": total_score})
-    # hi test commit?
     except Exception as e:
         print(e)
         if "conn" in locals():
             conn.close()
         return jsonify({"error": str(e)}), 500
-
 
 if __name__ == "__main__":
     app.run(port=5000)
