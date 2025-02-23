@@ -254,6 +254,7 @@ def categorize_batch():
         subprocess.run(["python3", "mongo_readwrite.py"])
 
         return jsonify({"results": results, "total_score": total_score})
+    #hi test commit?
     except Exception as e:
         print(e)
         if "conn" in locals():
