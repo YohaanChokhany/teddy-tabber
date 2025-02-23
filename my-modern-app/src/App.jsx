@@ -44,6 +44,8 @@ function App() {
     );
     if (error) return <div>Oops... {error.message}</div>
 
+
+
     return (
         <div className="main-container">
             <div className="navbar">
@@ -94,6 +96,7 @@ function App() {
             )}
         </div>
     )
+
 }
 
 export default App
