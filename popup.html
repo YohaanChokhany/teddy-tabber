@@ -30,6 +30,10 @@
     </div>
 
     <div class="container">
+      <button id="group-tabs"><img src="images/gemini.png" alt="Group Icon" style="width: 20px; height: 20px; margin-right: 5px;"> Group Tabs</button>
+    </div>
+
+    <div class="container">
       <h2>Tabs List</h2>
       <div style="position: relative;">
         <div id="tabs-list">
@@ -44,23 +48,19 @@
     </div>
 
     <div class="container">
-      <button id="group-tabs"><img src="images/gemini.png" alt="Group Icon" style="width: 20px; height: 20px; margin-right: 5px;"> Group Tabs</button>
-    </div>
-
-    <div class="container">
       <h2>Daily Challenges</h2>
       <div class="checkbox-list">
         <div class="checkbox-item">
-          <input type="checkbox" id="item1">
-          <label for="item1">Close 10 tabs</label>
+          <input type="checkbox" id="under-10-tabs-challenge" disabled >
+          <label for="item1">Have under 10 tabs open <span id="under-10-tabs-challenge-points" class="daily-challenge-points"></span></label>
         </div>
         <div class="checkbox-item">
-          <input type="checkbox" id="item2">
-          <label for="item2">Group tabs</label>
+          <input type="checkbox" id="group-tabs-challenge" disabled>
+          <label for="item2">Group tabs <span id="group-tabs-challenge-points" class="daily-challenge-points"></span></label>
         </div>
         <div class="checkbox-item">
-          <input type="checkbox" id="item3">
-          <label for="item3">Sort 3 tabs into education</label>
+          <input type="checkbox" id="educational-tabs-challenge" disabled>
+          <label for="item3">Open 3 Educational Tabs <span id="educational-tabs-challenge-points" class="daily-challenge-points"></span></label>
         </div>
       </div>
     </div>
