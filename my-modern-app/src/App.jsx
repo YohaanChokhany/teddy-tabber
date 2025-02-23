@@ -32,6 +32,10 @@ function App() {
         analyticsRef.current?.scrollIntoView({ behavior: 'smooth' })
     }
 
+    const scrollToHome = () => {
+        window.scrollTo({ top: 0, behavior: 'smooth' })
+    }
+
     if (isLoading) return (
         <div style={{ backgroundColor: '#f9f6f2', height: '100vh', display: 'flex', flexDirection: 'column', justifyContent: 'center', alignItems: 'center' }}>
             <img src={bearImage} alt="Loading..." style={{ width: '5rem', height: 'auto' }} />
@@ -48,7 +52,7 @@ function App() {
                     <h2>Bear Necessities</h2>
                 </div>
                 <div className="navbar-buttons">
-                <button className="navbar-button" onClick={() => window.location.href = '/home'}>Home</button>
+                <button className="navbar-button" onClick={scrollToHome}>Home</button>
                     <button className="navbar-button" onClick={scrollToAboutUs}>About Us</button>
                     <button className="navbar-button" onClick={scrollToAnalytics}>Data Analytics</button>
                 </div>
