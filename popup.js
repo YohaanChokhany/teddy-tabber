@@ -108,10 +108,53 @@ async function fetchAndCategorizeTabs() {
     if (tabsCountElement) {
       tabsCountElement.textContent = tabs.length;
     }
+
+    let numTabGroups = await new Promise(resolve => {
+      chrome.tabGroups.query({}, tabGroups => resolve(tabGroups.length));
+    });    
+
+    let challengePoints = 0;
+    const under10TabsChallenge = document.getElementById('under-10-tabs-challenge');
+    if (under10TabsChallenge) {
+      under10TabsChallenge.checked = tabs.length < 10;
+      const under10TabsChallengePoints = document.getElementById('under-10-tabs-challenge-points');
+      if (under10TabsChallengePoints) {
+        under10TabsChallengePoints.textContent = "+300";
+      }
+      if (under10TabsChallenge.checked) {
+        challengePoints += 300;
+      }
+    }
+
+    const educationalTabsChallenge = document.getElementById('educational-tabs-challenge');
+    if (educationalTabsChallenge) {
+      educationalTabsChallenge.checked = tabs.filter(tab => tab.category === 'education').length >= 3;
+      const educationalTabsChallengePoints = document.getElementById('educational-tabs-challenge-points');
+      if (educationalTabsChallengePoints) {
+        educationalTabsChallengePoints.textContent = "+300";
+      }
+      if (educationalTabsChallenge.checked) {
+        challengePoints += 300;
+      }
+    }
+    const groupTabsChallenge = document.getElementById('group-tabs-challenge');
+    if (groupTabsChallenge) {
+      groupTabsChallenge.checked = numTabGroups > 0;
+      const groupTabsChallengePoints = document.getElementById('group-tabs-challenge-points');
+      if (groupTabsChallengePoints) {
+        groupTabsChallengePoints.textContent = "+300";
+      }
+      if (groupTabsChallenge.checked) {
+        challengePoints += 300;
+      }
+    }
+
+    tabPoints += challengePoints;
     const tabPointsElement = document.getElementById("tab-points");
     if (tabPointsElement) {
       tabPointsElement.textContent = tabPoints;
     }
+
     document.getElementById('content').style.opacity = '1';
   } catch (error) {
     console.error('Error in fetchAndCategorizeTabs:', error);
@@ -165,6 +208,21 @@ function getCategoryName(category) {
   return emojiMap[category] || '';
 }
 
+function getCategoryColor(category) {
+  const emojiMap = {
+    'education': 'red',
+    'entertainment': 'orange',
+    'productivity': 'yellow',
+    'tech_and_dev': 'green',
+    'finance': 'blue',
+    'health_and_wellness': 'grey',
+    'social_media': 'purple',
+    'shopping': 'pink',
+    'gaming': 'cyan',
+  };
+  return emojiMap[category] || '';
+}
+
 // Add click handler to the fetch-tabs button
 document.getElementById('group-tabs').addEventListener('click', groupTabsByCategory);
 
@@ -189,7 +247,7 @@ async function groupTabsByCategory() {
     if (tabIds.length) {
       try {
         const group = await chrome.tabs.group({ tabIds });
-        await chrome.tabGroups.update(group, { title: getCategoryName(category) });
+        await chrome.tabGroups.update(group, { title: getCategoryName(category), color: getCategoryColor(category) });
       } catch (err) {
         console.error(`Error grouping "${category}":`, err);
       }
