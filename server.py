@@ -135,7 +135,7 @@ def categorize():
             model="gemini-1.5-flash",
             config={
                 "tools": [tab_categorizer],
-                "tool_config": {"function_calling_config": {"mode": "ANY"}},
+                "tool_config": {"function_calling_config": {"mode": "any"}},
                 "automatic_function_calling": {
                     "disable": True,
                     "maximum_remote_calls": None,
@@ -212,7 +212,7 @@ def categorize_batch():
                     model="gemini-1.5-flash",
                     config={
                         "tools": [tab_categorizer],
-                        "tool_config": {"mode": "ANY"},
+                        "tool_config": {"function_calling_config": {"mode": "any"}},
                         "automatic_function_calling": {
                             "disable": True,
                             "maximum_remote_calls": None,

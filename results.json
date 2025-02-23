@@ -1,46 +1,53 @@
 {
     "results": [
         {
-            "url": "https://cloud.mongodb.com/v2/67ba85c85721bb10b2a48edc#/metrics/replicaSet/67ba86624b52d00becb9ab15/explorer/userDataDB/user_tabs/find",
-            "title": "tabs Data | Cloud: MongoDB Cloud",
+            "id": 1744086120,
+            "url": "https://www.amazon.com/Practical-Guide-Quantitative-Finance-Interviews/dp/1438236662",
+            "title": "Amazon.com: A Practical Guide To Quantitative Finance Interviews: 9781438236667: Zhou, Xinfeng: Books",
+            "category": "finance",
+            "score": 200,
+            "ip_address": "127.0.0.1"
+        },
+        {
+            "id": 1744086265,
+            "url": "chrome://extensions/?errors=mihchdkolhhdfklacfjkdlfjfbfnnhhg",
+            "title": "Extensions",
             "category": "tech_and_dev",
-            "score": 10,
+            "score": 200,
             "ip_address": "127.0.0.1"
         },
         {
-            "url": "https://chatgpt.com/c/67bab2b2-47b8-800b-aea2-fdf61a634003",
-            "title": "Tab Categorization Scoring System",
-            "category": "entertainment",
-            "score": 3,
-            "ip_address": "127.0.0.1"
-        },
-        {
-            "url": "https://github.com/YohaanChokhany/teddy-tabber",
-            "title": "YohaanChokhany/teddy-tabber",
-            "category": "tech_and_dev",
-            "score": 0,
-            "ip_address": "127.0.0.1"
-        },
-        {
-            "url": "https://web.whatsapp.com/",
-            "title": "(2) WhatsApp",
-            "category": "social_media",
-            "score": 0,
-            "ip_address": "127.0.0.1"
-        },
-        {
-            "url": "https://docs.google.com/document/d/11NppWk9zbP80P47dLIO_ZrIYjnh8Wb-qYCL-KXlTSNI/edit?tab=t.0",
-            "title": "BoilerMake XII Welcome Packet - Google Docs",
+            "id": 1744086283,
+            "url": "https://docs.google.com/document/d/1d-gAOvFkhlSqTF3He4wNPzwyNbEqp8MBma_b9_2BAKg/edit?tab=t.0",
+            "title": "teddy tabber - Google Docs",
             "category": "education",
-            "score": 10,
+            "score": 500,
             "ip_address": "127.0.0.1"
         },
         {
-            "url": "https://app.slack.com/client/TF1B04NRW/C08C9V9SZD4",
-            "title": "C. Isaac Schweitzer, Gia Sareen, Rushil Khandelwal (DM) - Purdue Solutions - Slack",
-            "category": "social_media",
-            "score": 3,
+            "id": 1744086284,
+            "url": "https://purdue.brightspace.com/d2l/home/6824",
+            "title": "Homepage - Purdue West Lafayette",
+            "category": "education",
+            "score": 500,
+            "ip_address": "127.0.0.1"
+        },
+        {
+            "id": 1744086285,
+            "url": "https://purdue.brightspace.com/d2l/home/1227232",
+            "title": "Homepage - Spring 2025 STAT/MA 41600-004 LEC - Merge",
+            "category": "education",
+            "score": 500,
+            "ip_address": "127.0.0.1"
+        },
+        {
+            "id": 1744086331,
+            "url": "https://ai.google.dev/gemini-api/docs/function-calling/tutorial?lang=python",
+            "title": "Function calling tutorial \u00a0|\u00a0 Gemini API \u00a0|\u00a0 Google AI for Developers",
+            "category": "tech_and_dev",
+            "score": 200,
             "ip_address": "127.0.0.1"
         }
-    ]
+    ],
+    "total_score": 2100
 }
