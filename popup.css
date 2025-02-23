@@ -78,8 +78,9 @@ label {
 }
 
 .menu-icon img {
-  width: 20px;  /* Set the width */
-  height: 20px; /* Set the height */
+  width: 30px; /* Explicit width */
+  height: auto; /* Maintain aspect ratio */
+  max-width: 100%; /* Prevent overflow */
 }
 
 .header {
@@ -96,16 +97,17 @@ label {
 }
 
 .stat-box {
-  background-color: #f3d9c3;
-  border-radius: 12px; /* Makes the box rounded */
+  background-color: white;
+  color: black;
+  border-radius: 12px;
   padding: 10px 20px;
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
   display: flex;
   flex-direction: column;
   align-items: center;
-  min-width: 80px; /* Ensures a consistent size */
-  margin: 8px; /* Adds space between the boxes */
-  border: 2px solid #d3926e; /* Set border width, style, and color */
+  min-width: 80px;
+  margin: 8px;
+  border: 2px solid #d3926e;
   margin-left: 4px;
 }
 
@@ -252,10 +254,5 @@ label {
   color: #333;
   margin: 0;
   padding: 10px;
-}
-
-img {
-  width: auto; /* This could override your inline width */
-  height: auto; /* This could override your inline height */
 }
 

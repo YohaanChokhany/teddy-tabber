@@ -51,10 +51,13 @@
   top: 50px;
   right: 180px;
   padding: 1em;
-  background-color: #f8f9fa;
+  background-color: #fff;
   border-radius: 8px;
   margin-top: 10px; /* Adjust based on your layout */
   margin-left: 20px;
+  /*border-color: #c27f54; */
+  border-width: medium;
+  border-style: solid;
 }
 
 .logout-btn {

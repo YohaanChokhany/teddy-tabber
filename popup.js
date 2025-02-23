@@ -70,6 +70,7 @@ async function fetchAndCategorizeTabs() {
     tabsList.innerHTML = '';
     
     // Add categorized tabs to the list
+    let tabPoints = 0;
     data.results.forEach(result => {
       const tabElement = template.content.cloneNode(true);
       const tabItem = tabElement.querySelector('.tab-item');
@@ -92,20 +93,42 @@ async function fetchAndCategorizeTabs() {
         const categoryEmoji = getCategoryEmoji(result.category);
         iconElement.textContent = categoryEmoji;
       }
+
+      tabPoints += getCategoryPoints(result.category);
       
       tabsList.appendChild(tabElement);
     });
     updateBlurVisibility(); // Initial check
 
     // Update the tabs count in stats
-    const tabsCountElement = document.querySelector('.stat-box h1');
+    const tabsCountElement = document.getElementById('tabs-open');
     if (tabsCountElement) {
       tabsCountElement.textContent = tabs.length;
+    }
+    const tabPointsElement = document.getElementById("tab-points");
+    if (tabPointsElement) {
+      tabPointsElement.textContent = tabPoints;
     }
     document.getElementById('content').style.opacity = '1';
   } catch (error) {
     console.error('Error in fetchAndCategorizeTabs:', error);
   }
+}
+
+function getCategoryPoints(category) {
+  const pointsMap = {
+    'education': 500,
+    'entertainment': -500,
+    'productivity': 500,
+    'tech_and_dev': 200,
+    'finance': 200,
+    'health_and_wellness': 200,
+    'social_media': -500,
+    'shopping': -200,
+    'gaming': -500,
+    'other': -100
+  };
+  return pointsMap[category] || 0;
 }
 
 function getCategoryEmoji(category) {
