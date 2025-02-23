@@ -39,9 +39,12 @@ def add_score_column():
     c.execute("PRAGMA table_info(webpage_categories)")
     columns = [column[1] for column in c.fetchall()]
     if "score" not in columns:
-        c.execute("ALTER TABLE webpage_categories ADD COLUMN score INTEGER NOT NULL DEFAULT 0")
+        c.execute(
+            "ALTER TABLE webpage_categories ADD COLUMN score INTEGER NOT NULL DEFAULT 0"
+        )
     conn.commit()
     conn.close()
+
 
 # Initialize the database and add the score column if necessary
 init_db()
@@ -51,33 +54,35 @@ client = genai.Client(api_key="AIzaSyBF66UtwF45q40Xfon6uJgyKQF9kEiNSe4")
 app = Flask(__name__)
 CORS(app)  # This allows the Chrome extension to make requests to this server
 
+
 def get_category_score(category):
     """Assigns a score based on category type."""
     category_scores = {
-        'education': 500,
-        'entertainment': -500,
-        'productivity': 500,
-        'tech_and_dev': 200,
-        'finance': 200,
-        'health_and_wellness': 200,
-        'social_media': -500,
-        'shopping': -200,
-        'gaming': -500,
-        'other': -100
+        "education": 500,
+        "entertainment": -500,
+        "productivity": 500,
+        "tech_and_dev": 200,
+        "finance": 200,
+        "health_and_wellness": 200,
+        "social_media": -500,
+        "shopping": -200,
+        "gaming": -500,
+        "other": -100,
     }
     return category_scores.get(category, 1)
 
+
 def tab_categorizer(
-        education: bool,
-        entertainment: bool,
-        productivity: bool,
-        tech_and_dev: bool,
-        finance: bool,
-        health_and_wellness: bool,
-        social_media: bool,
-        shopping: bool,
-        gaming: bool,
-        other: bool,
+    education: bool,
+    entertainment: bool,
+    productivity: bool,
+    tech_and_dev: bool,
+    finance: bool,
+    health_and_wellness: bool,
+    social_media: bool,
+    shopping: bool,
+    gaming: bool,
+    other: bool,
 ) -> None:
     """Categorizes the tabs based on the user's input. Only one of the arguments can be true.
 
@@ -113,7 +118,6 @@ def tab_categorizer(
     return active_category
 
 
-
 @app.route("/categorize", methods=["POST"])
 def categorize():
     try:
@@ -147,8 +151,13 @@ def categorize():
             config={
                 "tools": [tab_categorizer],
                 "tool_config": {"function_calling_config": {"mode": "ANY"}},
-                "automatic_function_calling": {"disable": True, "maximum_remote_calls": None},
-                "system_instruction": open("gemini-api/system-instructions.txt", "r").read(),
+                "automatic_function_calling": {
+                    "disable": True,
+                    "maximum_remote_calls": None,
+                },
+                "system_instruction": open(
+                    "gemini-api/system-instructions.txt", "r"
+                ).read(),
             },
             contents=f"Title: {title}\nURL: {url}",
         )
@@ -177,7 +186,9 @@ def categorize():
         print(e)
         return jsonify({"error": str(e)}), 500
 
+
 import json
+
 
 @app.route("/categorize-batch", methods=["POST"])
 def categorize_batch():
@@ -195,6 +206,7 @@ def categorize_batch():
         for tab in tabs:
             url = tab.get("url", "")
             title = tab.get("title", "")
+            id = tab.get("id", "")
 
             c.execute(
                 """
@@ -216,8 +228,13 @@ def categorize_batch():
                     config={
                         "tools": [tab_categorizer],
                         "tool_config": {"mode": "ANY"},
-                        "automatic_function_calling": {"disable": True, "maximum_remote_calls": None},
-                        "system_instruction": open("gemini-api/system-instructions.txt", "r").read(),
+                        "automatic_function_calling": {
+                            "disable": True,
+                            "maximum_remote_calls": None,
+                        },
+                        "system_instruction": open(
+                            "gemini-api/system-instructions.txt", "r"
+                        ).read(),
                     },
                     contents=f"Title: {title}\nURL: {url}",
                 )
@@ -239,7 +256,16 @@ def categorize_batch():
                     (title, url, category, score),
                 )
 
-            results.append({"url": url, "title": title, "category": category, "score": score, "ip_address": user_ip})
+            results.append(
+                {
+                    "id": id,
+                    "url": url,
+                    "title": title,
+                    "category": category,
+                    "score": score,
+                    "ip_address": user_ip,
+                }
+            )
             total_score += score
 
         conn.commit()
@@ -254,12 +280,13 @@ def categorize_batch():
         subprocess.run(["python3", "mongo_readwrite.py"])
 
         return jsonify({"results": results, "total_score": total_score})
-    #hi test commit?
+    # hi test commit?
     except Exception as e:
         print(e)
         if "conn" in locals():
             conn.close()
         return jsonify({"error": str(e)}), 500
+
 
 if __name__ == "__main__":
     app.run(port=5000)

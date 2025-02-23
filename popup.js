@@ -253,6 +253,30 @@ async function groupTabsByCategory() {
       }
     }
   }
+
+  let numTabGroups = await new Promise(resolve => {
+    chrome.tabGroups.query({}, tabGroups => resolve(tabGroups.length));
+  });
+
+  const groupTabsChallenge = document.getElementById('group-tabs-challenge');
+  let challengePoints = 0;
+  if (groupTabsChallenge) {
+    groupTabsChallenge.checked = numTabGroups > 0;
+    const groupTabsChallengePoints = document.getElementById('group-tabs-challenge-points');
+    if (groupTabsChallengePoints) {
+      groupTabsChallengePoints.textContent = "+300";
+    }
+    if (groupTabsChallenge.checked) {
+      challengePoints = 300;
+    }
+  }
+
+  const tabPointsElement = document.getElementById("tab-points");
+  let tabPoints = parseInt(tabPointsElement.textContent, 10);
+  tabPoints += challengePoints;
+  if (tabPointsElement) {
+    tabPointsElement.textContent = tabPoints;
+  }
 }
 
 
