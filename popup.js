@@ -1,3 +1,32 @@
+const tabsList = document.getElementById('tabs-list');
+// Add the blur overlay div if it doesn't exist
+let blurOverlay = tabsList.querySelector('.blur-overlay');
+if (!blurOverlay) {
+  blurOverlay = document.createElement('div');
+  blurOverlay.className = 'blur-overlay';
+  tabsList.parentElement.appendChild(blurOverlay);
+}
+
+// Add the top blur overlay div if it doesn't exist
+let topBlurOverlay = tabsList.querySelector('.blur-overlay-top');
+if (!topBlurOverlay) {
+  topBlurOverlay = document.createElement('div');
+  topBlurOverlay.className = 'blur-overlay-top';
+  tabsList.parentElement.appendChild(topBlurOverlay);
+}
+
+// Update scroll listener to show/hide blur effect
+const updateBlurVisibility = () => {
+  const isScrollable = tabsList.scrollHeight > tabsList.clientHeight;
+  const isScrolledToBottom = tabsList.scrollHeight - tabsList.scrollTop === tabsList.clientHeight;
+  const isScrolledToTop = tabsList.scrollTop === 0;
+  
+  blurOverlay.style.opacity = isScrollable && !isScrolledToBottom ? '1' : '0';
+  topBlurOverlay.style.opacity = isScrollable && !isScrolledToTop ? '1' : '0';
+};
+
+tabsList.addEventListener('scroll', updateBlurVisibility);
+
 async function fetchAndCategorizeTabs() {
   try {
     // Get all tabs from all windows
@@ -66,12 +95,14 @@ async function fetchAndCategorizeTabs() {
       
       tabsList.appendChild(tabElement);
     });
+    updateBlurVisibility(); // Initial check
 
     // Update the tabs count in stats
     const tabsCountElement = document.querySelector('.stat-box h1');
     if (tabsCountElement) {
       tabsCountElement.textContent = tabs.length;
     }
+    document.getElementById('content').style.opacity = '1';
   } catch (error) {
     console.error('Error in fetchAndCategorizeTabs:', error);
   }

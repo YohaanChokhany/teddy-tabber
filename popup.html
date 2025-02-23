@@ -11,50 +11,55 @@
   <div class="header">
     <img src="images/bear_hi_wave_1.png" class="bear-icon" alt="Bear Icon">
     <div class="menu-icon">
-        <img src="images/menu-burger.png" alt="Menu Icon">
+        <a target="_blank" href="http://localhost:5173/">
+            <img src="images/open-in-new.png" alt="Menu Icon" style="width: 20px; height: 20px;">
+        </a>
     </div>
   </div>
-
-  <div class="stats">
-    <div class="stat-box">
-      <p>Tabs Open</p>
-      <h1>15</h1>
-    </div>
-    <div class="stat-box">
-      <p>Tab Points</p>
-      <h1>5</h1>
-    </div>
-  </div>
-
-  <h3>Tabs List</h3>
-  <div id="tabs-list">
-    <template id="tabs-list-template">
-      <div class="tab-item">
-        <div class="tab-icon">🔴</div>
-        <span class="tab-title"></span>
+  <div id="content" style="opacity: 0;">
+    <div class="stats">
+      <div class="stat-box">
+        <p>Tabs Open</p>
+        <h1>15</h1>
       </div>
-    </template>
-  </div>
-
-  <div class="container">
-    <h2>Daily Challenges</h2>
-    <div class="checkbox-list">
-      <div class="checkbox-item">
-        <input type="checkbox" id="item1">
-        <label for="item1">Close 10 tabs</label>
-      </div>
-      <div class="checkbox-item">
-        <input type="checkbox" id="item2">
-        <label for="item2">Group tabs</label>
-      </div>
-      <div class="checkbox-item">
-        <input type="checkbox" id="item3">
-        <label for="item3">Sort 3 tabs into education</label>
+      <div class="stat-box">
+        <p>Tab Points</p>
+        <h1>5</h1>
       </div>
     </div>
-  </div>
 
-  <div class="container">
+    <div class="container">
+      <h2>Tabs List</h2>
+      <div style="position: relative;">
+        <div id="tabs-list">
+          <template id="tabs-list-template">
+            <div class="tab-item">
+              <div class="tab-icon">🔴</div>
+              <span class="tab-title"></span>
+            </div>
+          </template>
+        </div>
+      </div>
+    </div>
+
+    <div class="container">
+      <h2>Daily Challenges</h2>
+      <div class="checkbox-list">
+        <div class="checkbox-item">
+          <input type="checkbox" id="item1">
+          <label for="item1">Close 10 tabs</label>
+        </div>
+        <div class="checkbox-item">
+          <input type="checkbox" id="item2">
+          <label for="item2">Group tabs</label>
+        </div>
+        <div class="checkbox-item">
+          <input type="checkbox" id="item3">
+          <label for="item3">Sort 3 tabs into education</label>
+        </div>
+      </div>
+    </div>
+
     <div class="container">
       <button id="fetch-tabs">Fetch Open Tabs</button>
       <div id="tabs-display"></div>

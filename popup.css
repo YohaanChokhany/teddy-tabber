@@ -17,18 +17,32 @@ body {
 }
 
 .checkbox-list {
-  max-width: 400px;
-  margin: 0 auto;
-  padding: 20px;
+  width: 280px;
+  max-height: 170px;
+  overflow-y: auto;
+  position: relative;
+  margin: 10px 0;
+  padding: 0;
   background: white;
   border-radius: 8px;
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  /* Hide scrollbar for Chrome, Safari and Opera */
+  &::-webkit-scrollbar {
+    display: none;
+  }
+  
+  /* Hide scrollbar for IE, Edge and Firefox */
+  -ms-overflow-style: none;  /* IE and Edge */
+  scrollbar-width: none;  /* Firefox */
 }
+
 .checkbox-item {
   display: flex;
   align-items: center;
-  margin-bottom: 10px;
+  padding: 8px;
+  border-bottom: 1px solid #eee;
 }
+
 input[type="checkbox"] {
   appearance: none;
   width: 20px;
@@ -39,10 +53,12 @@ input[type="checkbox"] {
   transition: all 0.2s;
   cursor: pointer;
 }
+
 input[type="checkbox"]:checked {
   background-color: #d3926e;
   border-color: #d3926e;
 }
+
 input[type="checkbox"]:checked::after {
   content: "✔";
   color: white;
@@ -51,14 +67,19 @@ input[type="checkbox"]:checked::after {
   text-align: center;
   line-height: 20px;
 }
+
 label {
   color: #333;
-  font-size: 16px;
+  font-size: 14px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  flex-grow: 1;
 }
+
 .menu-icon img {
-  width: 30px; /* Explicit width */
-  height: auto; /* Maintain aspect ratio */
-  max-width: 100%; /* Prevent overflow */
+  width: 20px;  /* Set the width */
+  height: 20px; /* Set the height */
 }
 
 .header {
@@ -148,10 +169,93 @@ label {
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
+  font-size: 14px;
+  color: #333;
 }
 
 #tabs-list {
-  width: 300px;
-  max-height: 400px;
+  width: 280px;
+  max-height: 170px;
   overflow-y: auto;
+  position: relative;
+  background: white;
+  border-radius: 8px;
+  padding: 0;
+  margin: 10px 0;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  /* Hide scrollbar for Chrome, Safari and Opera */
+  &::-webkit-scrollbar {
+    display: none;
+  }
+  
+  /* Hide scrollbar for IE, Edge and Firefox */
+  -ms-overflow-style: none;  /* IE and Edge */
+  scrollbar-width: none;  /* Firefox */
 }
+
+.blur-overlay {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 5px;
+  height: 30px;
+  background: linear-gradient(transparent, white);
+  pointer-events: none;
+  opacity: 0;
+  border-bottom-left-radius: 8px;
+  border-bottom-right-radius: 8px;
+}
+
+.blur-overlay-top {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 5px;
+  height: 30px;
+  background: linear-gradient(white, transparent);
+  pointer-events: none;
+  opacity: 0;
+  border-top-left-radius: 8px;
+  border-top-right-radius: 8px;
+}
+/* Common styles for both lists */
+.list-container {
+  width: 280px;
+  background: white;
+  border-radius: 8px;
+  padding: 0;
+  margin: 10px 0;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+/* Add hover effect to both */
+.tab-item:hover,
+.checkbox-item:hover {
+  background-color: rgba(211, 146, 110, 0.1);
+}
+
+.tab-item:last-child,
+.checkbox-item:last-child {
+  border-bottom: none;
+}
+
+.list-heading {
+  font-size: 16px;  /* Set to the same size */
+  color: #333;
+  margin: 0;
+  padding: 10px;
+}
+
+.daily-challenges-heading,
+.tabs-list-heading {
+  font-size: 16px;  /* Set to the same size */
+  color: #333;
+  margin: 0;
+  padding: 10px;
+}
+
+img {
+  width: auto; /* This could override your inline width */
+  height: auto; /* This could override your inline height */
+}
+
