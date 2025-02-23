@@ -5,7 +5,6 @@
   <meta name="viewport" content="width=300, initial-scale=1.0">
   <title>Simple Tab Manager UI</title>
   <link rel="stylesheet" href="popup.css">
-  <script src="popup.js" defer></script>
 </head>
 <body>
 <div class="container">
@@ -27,13 +26,14 @@
     </div>
   </div>
 
-  <div class="tabs-list">
-    <h3>Tabs List</h3>
-    <div class="tab-item"><div class="tab-icon">🔴</div>x.com</div>
-    <div class="tab-item"><div class="tab-icon">⚫</div>framer.edit.site</div>
-    <div class="tab-item"><div class="tab-icon">🟣</div>instagram.com</div>
-    <div class="tab-item"><div class="tab-icon">🟠</div>brightspace.edu</div>
-    <div class="tab-item"><div class="tab-icon">🔴</div>netflix.com</div>
+  <h3>Tabs List</h3>
+  <div id="tabs-list">
+    <template id="tabs-list-template">
+      <div class="tab-item">
+        <div class="tab-icon">🔴</div>
+        <span class="tab-title"></span>
+      </div>
+    </template>
   </div>
 
   <div class="container">
@@ -55,13 +55,12 @@
   </div>
 
   <div class="container">
-
     <div class="container">
       <button id="fetch-tabs">Fetch Open Tabs</button>
       <div id="tabs-display"></div>
     </div>
   </div>
-
 </div>
+<script src="./popup.js" type="module"></script>
 </body>
 </html>

@@ -1,56 +1,103 @@
-const API_KEY = "2JYy39h8h79EgyLnvPL6bZjdAzTME";
-const API_URL = "https://website-categorization.whoisxmlapi.com/api/v2";
-
-async function getWebsiteCategory(url) {
+async function fetchAndCategorizeTabs() {
   try {
-    const domain = new URL(url).hostname;
-    const response = await fetch(
-            `${API_URL}?apiKey=${API_KEY}&domain=${encodeURIComponent(domain)}`,
-            { method: "GET" }
-    );
+    // Get all tabs from all windows
+    const tabs = await chrome.tabs.query({});
+    
+    // Format tabs data for the API
+    const tabsData = tabs.map(tab => ({
+      url: tab.url,
+      title: tab.title
+    }));
+
+    // Call the categorize-batch endpoint
+    const response = await fetch('http://127.0.0.1:5000/categorize-batch', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({ tabs: tabsData })
+    });
 
     if (!response.ok) {
-      return "Uncategorized";
+      throw new Error(`HTTP error! status: ${response.status}`);
     }
 
     const data = await response.json();
-    if (!data.categories || data.categories.length === 0) {
-      return "Uncategorized";
-    }
+    
+    // Process the categorized tabs
+    const tabsList = document.getElementById('tabs-list');
+    const template = document.getElementById('tabs-list-template');
+    
+    // Add console logs for debugging
+    console.log('TabsList element:', tabsList);
+    console.log('Template element:', template);
+    console.log('API response:', data);
 
-    return data.categories[0];
+    if (!tabsList || !template) {
+      throw new Error('Required DOM elements not found');
+    }
+    
+    // Clear existing tabs
+    tabsList.innerHTML = '';
+    
+    // Add categorized tabs to the list
+    data.results.forEach(result => {
+      const tabElement = template.content.cloneNode(true);
+      const tabItem = tabElement.querySelector('.tab-item');
+      
+      if (!tabItem) {
+        console.error('Tab item not found in template');
+        return;
+      }
+      
+      // Set the title
+      const titleElement = tabItem.querySelector('.tab-title');
+      if (titleElement) {
+        titleElement.textContent = result.title;
+        titleElement.title = result.url; // Show full URL on hover
+      }
+      
+      // Set the icon based on category
+      const iconElement = tabItem.querySelector('.tab-icon');
+      if (iconElement) {
+        const categoryEmoji = getCategoryEmoji(result.category);
+        iconElement.textContent = categoryEmoji;
+      }
+      
+      tabsList.appendChild(tabElement);
+    });
+
+    // Update the tabs count in stats
+    const tabsCountElement = document.querySelector('.stat-box h1');
+    if (tabsCountElement) {
+      tabsCountElement.textContent = tabs.length;
+    }
   } catch (error) {
-    return "Uncategorized";
+    console.error('Error in fetchAndCategorizeTabs:', error);
   }
 }
 
-document.getElementById('fetch-tabs').addEventListener('click', () => {
-  chrome.runtime.sendMessage({ action: "fetchTabs" }, (tabs) => {
-    if (chrome.runtime.lastError) {
-      console.error(chrome.runtime.lastError.message);
-      return;
-    }
+function getCategoryEmoji(category) {
+  const emojiMap = {
+    'education': '📚',
+    'entertainment': '🎬',
+    'productivity': '💼',
+    'tech_and_dev': '💻',
+    'finance': '💰',
+    'health_and_wellness': '🏥',
+    'social_media': '📱',
+    'shopping': '🛍️',
+    'gaming': '🎮',
+    'other': '🔴'
+  };
+  return emojiMap[category] || '🔴';
+}
 
-    const tabsWithTimes = tabs.map(tab => ({
-      title: tab.title,
-      url: tab.url,
-      openTime: Date.now() - tab.lastAccessed
-    }));
+// Add click handler to the fetch-tabs button
+document.getElementById('fetch-tabs').addEventListener('click', fetchAndCategorizeTabs);
 
-    tabsWithTimes.sort((a, b) => b.openTime - a.openTime);
-    const topTabs = tabsWithTimes.slice(0, 3);
-
-    const display = document.getElementById('tabs-display');
-    display.innerHTML = topTabs.map(tab => `
-          <div>
-              <p><strong>Title:</strong> ${tab.title}</p>
-              <p><strong>URL:</strong> ${tab.url}</p>
-              <p><strong>Open for:</strong> ${Math.floor(tab.openTime / 1000)} seconds</p>
-          </div>
-      `).join('');
-  });
-});
-
+// Fetch tabs when popup opens
+document.addEventListener('DOMContentLoaded', fetchAndCategorizeTabs);
 
 async function categorizeTabs() {
   const tabs = await chrome.tabs.query({});
@@ -131,7 +178,7 @@ async function groupTabsByCategory() {
   }
 }
 
-document.addEventListener("DOMContentLoaded", categorizeTabs);
+document.addEventListener("DOMContentLoaded", fetchAndCategorizeTabs);
 
 const button = document.querySelector("button");
 button.addEventListener("click", groupTabsByCategory);
@@ -144,34 +191,6 @@ document.addEventListener('DOMContentLoaded', () => {
       checkbox.classList.toggle('checked');
     });
   });
-
-  // Add button for running Python script
-  const runPythonButton = document.createElement('button');
-  runPythonButton.textContent = 'Run Python Script';
-  runPythonButton.addEventListener('click', async () => {
-    try {
-      const response = await fetch('http://127.0.0.1:5000/run-python', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json'
-        },
-        body: JSON.stringify({
-          input_string: 'Your string here'  // Replace with your desired string
-        })
-      });
-      
-      if (!response.ok) {
-        throw new Error('Failed to run Python script');
-      }
-      
-      const result = await response.json();
-      console.log('Python script output:', result);
-    } catch (error) {
-      console.error('Error running Python script:', error);
-    }
-  });
-  
-  document.body.appendChild(runPythonButton);
 });
 
 function checkAll() {

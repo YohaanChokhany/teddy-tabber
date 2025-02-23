@@ -5,16 +5,28 @@
   "description": "Manage and categorize your open tabs.",
   "permissions": [
     "tabs",
-    "http://localhost:5000/"
+    "tabGroups"
   ],
   "host_permissions": [
-    "<all_urls>"
+    "https://*/*",
+    "http://*/*"
   ],
   "background": {
     "service_worker": "background.js"
   },
   "action": {
     "default_popup": "popup.html",
-    "default_icon": "images/icon.png"
-  }
+    "default_icon": "images/logo.png"
+  },
+  "content_scripts": [
+    {
+      "matches": ["https://*/*", "http://*/*"],
+      "js": ["content-script.js"],
+      "all_frames": true,
+      "match_origin_as_fallback": false,
+      "match_about_blank": false,
+      "run_at": "document_idle",
+      "world": "ISOLATED"
+    }
+  ]
 }
