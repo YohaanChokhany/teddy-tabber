@@ -1,4 +1,4 @@
-import React, { useState, useRef } from 'react'
+import React, { useState, useRef, useEffect } from 'react'
 import { useAuth0 } from '@auth0/auth0-react'
 import Leaderboard from './components/Leaderboard'
 import Login from './components/Login'
@@ -12,9 +12,24 @@ function App() {
     const { isLoading, isAuthenticated, error, user, logout } = useAuth0()
     const [showAccountPopup, setShowAccountPopup] = useState(false)
     const [showAnalytics, setShowAnalytics] = useState(false)
+    const [ipAddress, setIpAddress] = useState('')
     const aboutUsRef = useRef(null)
     const analyticsRef = useRef(null)
-    
+
+    useEffect(() => {
+        const fetchIpAddress = async () => {
+            try {
+                const response = await fetch('https://api.ipify.org?format=json')
+                const data = await response.json()
+                setIpAddress(data.ip)
+            } catch (error) {
+                console.error('Error fetching IP address:', error)
+            }
+        }
+
+        fetchIpAddress()
+    }, [])
+
     const scrollToAboutUs = () => {
         aboutUsRef.current?.scrollIntoView({ behavior: 'smooth' })
     }
@@ -33,7 +48,7 @@ function App() {
         <div className="main-container">
             <div className="navbar">
                 <div className="navbar-brand">
-                    <h2>My App</h2>
+                    <h2>Bear Necessities</h2>
                 </div>
                 <div className="navbar-buttons">
                     <button className="navbar-button" onClick={() => window.location.href = '/home'}>Home</button>
@@ -68,6 +83,7 @@ function App() {
                                         <h2>Your Account</h2>
                                         <p>Username: {user.nickname}</p>
                                         <p>Email: {user.email}</p>
+                                        <p>IP Address: {ipAddress}</p>
                                     </div>
                                     <button onClick={() => logout({ returnTo: window.location.origin })}>Logout</button>
                                 </>

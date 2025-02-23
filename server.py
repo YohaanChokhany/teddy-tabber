@@ -1,9 +1,11 @@
 from flask import Flask, jsonify, request
 from flask_cors import CORS
 import subprocess
+import requests
 from google import genai
 import sqlite3
 import os
+import json
 from datetime import datetime
 
 # Create db directory if it doesn't exist
@@ -30,24 +32,52 @@ def init_db():
 
 
 # Initialize the database when the server starts
+def add_score_column():
+    """Add the score column to the webpage_categories table if it doesn't exist."""
+    conn = sqlite3.connect("db/sqlite.db")
+    c = conn.cursor()
+    c.execute("PRAGMA table_info(webpage_categories)")
+    columns = [column[1] for column in c.fetchall()]
+    if "score" not in columns:
+        c.execute("ALTER TABLE webpage_categories ADD COLUMN score INTEGER NOT NULL DEFAULT 0")
+    conn.commit()
+    conn.close()
+
+# Initialize the database and add the score column if necessary
 init_db()
+add_score_column()
 
 client = genai.Client(api_key="AIzaSyBF66UtwF45q40Xfon6uJgyKQF9kEiNSe4")
 app = Flask(__name__)
 CORS(app)  # This allows the Chrome extension to make requests to this server
 
+def get_category_score(category):
+    """Assigns a score based on category type."""
+    category_scores = {
+        'education': 500,
+        'entertainment': -500,
+        'productivity': 500,
+        'tech_and_dev': 200,
+        'finance': 200,
+        'health_and_wellness': 200,
+        'social_media': -500,
+        'shopping': -200,
+        'gaming': -500,
+        'other': -100
+    }
+    return category_scores.get(category, 1)
 
 def tab_categorizer(
-    education: bool,
-    entertainment: bool,
-    productivity: bool,
-    tech_and_dev: bool,
-    finance: bool,
-    health_and_wellness: bool,
-    social_media: bool,
-    shopping: bool,
-    gaming: bool,
-    other: bool,
+        education: bool,
+        entertainment: bool,
+        productivity: bool,
+        tech_and_dev: bool,
+        finance: bool,
+        health_and_wellness: bool,
+        social_media: bool,
+        shopping: bool,
+        gaming: bool,
+        other: bool,
 ) -> None:
     """Categorizes the tabs based on the user's input. Only one of the arguments can be true.
 
@@ -83,50 +113,42 @@ def tab_categorizer(
     return active_category
 
 
+
 @app.route("/categorize", methods=["POST"])
 def categorize():
     try:
         data = request.get_json()
         title = data.get("title", "")
         url = data.get("url", "")
+        print(f"Title: {title}\nURL: {url}")
 
-        # Connect to database once
         conn = sqlite3.connect("db/sqlite.db")
         c = conn.cursor()
 
-        # Check if URL already exists in database
         c.execute(
             """
-            SELECT category FROM webpage_categories 
+            SELECT category, score FROM webpage_categories
             WHERE url = ?
             ORDER BY timestamp DESC
             LIMIT 1
-        """,
+            """,
             (url,),
         )
-        existing_category = c.fetchone()
+        existing_entry = c.fetchone()
 
-        if existing_category:
+        if existing_entry:
+            category, score = existing_entry
+            print(f"Category: {category}, Score: {score}")
             conn.close()
-            return jsonify({"output": existing_category[0]})
+            return jsonify({"output": category, "score": score})
 
-        # If URL doesn't exist, proceed with API call
         response = client.models.generate_content(
             model="gemini-1.5-flash",
             config={
                 "tools": [tab_categorizer],
-                "tool_config": {
-                    "function_calling_config": {
-                        "mode": "ANY",
-                    }
-                },
-                "automatic_function_calling": {
-                    "disable": True,
-                    "maximum_remote_calls": None,
-                },
-                "system_instruction": open(
-                    "gemini-api/system-instructions.txt", "r"
-                ).read(),
+                "tool_config": {"function_calling_config": {"mode": "ANY"}},
+                "automatic_function_calling": {"disable": True, "maximum_remote_calls": None},
+                "system_instruction": open("gemini-api/system-instructions.txt", "r").read(),
             },
             contents=f"Title: {title}\nURL: {url}",
         )
@@ -137,117 +159,106 @@ def categorize():
                 category = k
                 break
 
-        # Store the data using the existing connection
+        score = get_category_score(category)
+        print(f"Category: {category}, Score: {score}")
+
         c.execute(
             """
-            INSERT INTO webpage_categories (title, url, category)
-            VALUES (?, ?, ?)
-        """,
-            (title, url, category),
+            INSERT INTO webpage_categories (title, url, category, score)
+            VALUES (?, ?, ?, ?)
+            """,
+            (title, url, category, score),
         )
         conn.commit()
         conn.close()
 
-        return jsonify({"output": category})
+        return jsonify({"output": category, "score": score})
     except Exception as e:
         print(e)
         return jsonify({"error": str(e)}), 500
 
+import json
 
 @app.route("/categorize-batch", methods=["POST"])
 def categorize_batch():
+    print("Categorizing batch")
     try:
         data = request.get_json()
-        tabs = data.get("tabs", [])  # Expect list of {url, title} objects
+        tabs = data.get("tabs", [])
+        user_ip = request.remote_addr  # Capture the user's IP address
 
-        # Connect to database once for the entire batch
         conn = sqlite3.connect("db/sqlite.db")
         c = conn.cursor()
 
         results = []
+        total_score = 0
         for tab in tabs:
             url = tab.get("url", "")
             title = tab.get("title", "")
-            id = tab.get("id", "")
 
-            # Check if URL exists in database
             c.execute(
                 """
-                SELECT category FROM webpage_categories 
+                SELECT category, score FROM webpage_categories
                 WHERE url = ?
                 ORDER BY timestamp DESC
                 LIMIT 1
-            """,
+                """,
                 (url,),
             )
-            existing_category = c.fetchone()
+            existing_entry = c.fetchone()
 
-            if existing_category:
-                results.append(
-                    {
-                        "id": id,
-                        "url": url,
-                        "title": title,
-                        "category": existing_category[0],
-                    }
+            if existing_entry:
+                category, score = existing_entry
+                print(f"Found category for {url}: {category}, Score: {score}")
+            else:
+                response = client.models.generate_content(
+                    model="gemini-1.5-flash",
+                    config={
+                        "tools": [tab_categorizer],
+                        "tool_config": {"mode": "ANY"},
+                        "automatic_function_calling": {"disable": True, "maximum_remote_calls": None},
+                        "system_instruction": open("gemini-api/system-instructions.txt", "r").read(),
+                    },
+                    contents=f"Title: {title}\nURL: {url}",
                 )
-                continue
 
-            # If URL doesn't exist, call the API
-            response = client.models.generate_content(
-                model="gemini-1.5-flash",
-                config={
-                    "tools": [tab_categorizer],
-                    "tool_config": {
-                        "function_calling_config": {
-                            "mode": "ANY",
-                        }
-                    },
-                    "automatic_function_calling": {
-                        "disable": True,
-                        "maximum_remote_calls": None,
-                    },
-                    "system_instruction": open(
-                        "gemini-api/system-instructions.txt", "r"
-                    ).read(),
-                },
-                contents=f"Title: {title}\nURL: {url}",
-            )
+                category = "other"
+                for k, v in response.function_calls[0].args.items():
+                    if v:
+                        category = k
+                        break
 
-            category = "other"
-            for k, v in response.function_calls[0].args.items():
-                if v:
-                    category = k
-                    break
+                score = get_category_score(category)
+                print(f"New category for {url}: {category}, Score: {score}")
 
-            # Store the new categorization
-            c.execute(
-                """
-                INSERT INTO webpage_categories (title, url, category)
-                VALUES (?, ?, ?)
-            """,
-                (title, url, category),
-            )
-            results.append(
-                {
-                    "id": id,
-                    "url": url,
-                    "title": title,
-                    "category": category,
-                }
-            )
+                c.execute(
+                    """
+                    INSERT INTO webpage_categories (title, url, category, score)
+                    VALUES (?, ?, ?, ?)
+                    """,
+                    (title, url, category, score),
+                )
 
-        # Commit all new entries and close connection
+            results.append({"url": url, "title": title, "category": category, "score": score, "ip_address": user_ip})
+            total_score += score
+
         conn.commit()
         conn.close()
 
-        return jsonify({"results": results})
+        # Write results to results.json including IP address
+        with open("results.json", "w") as f:
+            json.dump({"results": results, "total_score": total_score}, f, indent=4)
+
+        # Call the external scripts
+        subprocess.run(["python3", "./my-modern-app/getting_users.py"])
+        subprocess.run(["python3", "mongo_readwrite.py"])
+
+        return jsonify({"results": results, "total_score": total_score})
     except Exception as e:
         print(e)
         if "conn" in locals():
             conn.close()
         return jsonify({"error": str(e)}), 500
-
 
 if __name__ == "__main__":
     app.run(port=5000)
