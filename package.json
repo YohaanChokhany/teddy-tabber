@@ -1,5 +1,6 @@
 {
   "dependencies": {
-    "@auth0/auth0-react": "^2.3.0"
+    "@auth0/auth0-react": "^2.3.0",
+    "recharts": "^2.15.1"
   }
 }

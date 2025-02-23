@@ -123,3 +123,14 @@
   background: #c9302c;
 }
 
+.chart-card h3 {
+    margin-bottom: 10px;
+    color: black !important;
+
+}
+
+.chart-card p {
+  margin-bottom: 10px;
+  color: black !important;
+
+}

@@ -1,11 +1,21 @@
 .about-us-container {
     padding: 40px;
     text-align: center;
-    background-color: #f9f9f9;
+    background-color: #f9f6f2;
 }
 
 .about-us-container h2 {
     color: #c27f54;
+    font-size: 2rem;
+}
+
+.about-us-container h3 {
+    color: #c27f54;
+    font-size: 2rem;
+}
+
+.about-us-container li {
+    color: black;
     font-size: 2rem;
 }
 
