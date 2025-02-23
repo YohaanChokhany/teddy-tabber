@@ -47,10 +47,10 @@ Bear Necessities is a productivity tool designed to help manage browser tabs eff
 2. Start the frontend development server:
     ```sh
     cd ../my-modern-app
-    npm start
+    npm run dev
     ```
 
-3. Open your browser and navigate to `http://localhost:3000`.
+3. Open your browser and navigate to `http://localhost:5173`.
 
 ## API Endpoints
 
