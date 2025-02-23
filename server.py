@@ -23,6 +23,7 @@ def init_db():
             title TEXT NOT NULL,
             url TEXT NOT NULL,
             category TEXT NOT NULL,
+            score INTEGER NOT NULL DEFAULT 0,
             timestamp DATETIME DEFAULT CURRENT_TIMESTAMP
         )
     """
@@ -31,24 +32,8 @@ def init_db():
     conn.close()
 
 
-# Initialize the database when the server starts
-def add_score_column():
-    """Add the score column to the webpage_categories table if it doesn't exist."""
-    conn = sqlite3.connect("db/sqlite.db")
-    c = conn.cursor()
-    c.execute("PRAGMA table_info(webpage_categories)")
-    columns = [column[1] for column in c.fetchall()]
-    if "score" not in columns:
-        c.execute(
-            "ALTER TABLE webpage_categories ADD COLUMN score INTEGER NOT NULL DEFAULT 0"
-        )
-    conn.commit()
-    conn.close()
-
-
 # Initialize the database and add the score column if necessary
 init_db()
-add_score_column()
 
 client = genai.Client(api_key="AIzaSyBF66UtwF45q40Xfon6uJgyKQF9kEiNSe4")
 app = Flask(__name__)
