@@ -6,6 +6,7 @@ import Account from './components/Account'
 import AboutUs from './components/AboutUs'
 import bearImage from './assets/bear_hi_wave_1.png';
 
+/**/
 
 
 import './App.css'
