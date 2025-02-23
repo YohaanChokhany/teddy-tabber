@@ -27,13 +27,16 @@ const updateBlurVisibility = () => {
 
 tabsList.addEventListener('scroll', updateBlurVisibility);
 
+let tabs = [];
+
 async function fetchAndCategorizeTabs() {
   try {
     // Get all tabs from all windows
-    const tabs = await chrome.tabs.query({});
+    tabs = await chrome.tabs.query({});
 
     // Format tabs data for the API
     const tabsData = tabs.map(tab => ({
+      id: tab.id,
       url: tab.url,
       title: tab.title
     }));
@@ -68,7 +71,7 @@ async function fetchAndCategorizeTabs() {
 
     // Clear existing tabs
     tabsList.innerHTML = '';
-
+    tabs = data.results;
     // Add categorized tabs to the list
     let tabPoints = 0;
     data.results.forEach(result => {
@@ -147,8 +150,53 @@ function getCategoryEmoji(category) {
   return emojiMap[category] || '🔴';
 }
 
+function getCategoryName(category) {
+  const emojiMap = {
+    'education': 'Education',
+    'entertainment': 'Entertainment',
+    'productivity': 'Productivity',
+    'tech_and_dev': 'Tech & Dev',
+    'finance': 'Finance',
+    'health_and_wellness': 'Health & Wellness',
+    'social_media': 'Social Media',
+    'shopping': 'Shopping',
+    'gaming': 'Gaming',
+  };
+  return emojiMap[category] || '';
+}
+
 // Add click handler to the fetch-tabs button
-document.getElementById('fetch-tabs').addEventListener('click', fetchAndCategorizeTabs);
+document.getElementById('group-tabs').addEventListener('click', groupTabsByCategory);
+
+async function groupTabsByCategory() {
+  const groupedTabs = {};
+
+  for (const tab of tabs) {
+    if (!tab.url) continue;
+
+    const category = tab.category;
+
+    if (!groupedTabs[category]) {
+      groupedTabs[category] = [];
+    }
+    groupedTabs[category].push(tab.id);
+  }
+
+  console.log(groupedTabs);
+
+  for (const [category, tabIds] of Object.entries(groupedTabs)) {
+    if (category == "other") continue;
+    if (tabIds.length) {
+      try {
+        const group = await chrome.tabs.group({ tabIds });
+        await chrome.tabGroups.update(group, { title: getCategoryName(category) });
+      } catch (err) {
+        console.error(`Error grouping "${category}":`, err);
+      }
+    }
+  }
+}
+
 
 // Fetch tabs when popup opens
 document.addEventListener('DOMContentLoaded', fetchAndCategorizeTabs);
@@ -203,33 +251,6 @@ function updatePopupUI(groupedTabs) {
       ul.appendChild(element);
     }
   });
-}
-
-async function groupTabsByCategory() {
-  const tabs = await chrome.tabs.query({});
-  const groupedTabs = {};
-
-  for (const tab of tabs) {
-    if (!tab.url) continue;
-
-    const category = await getWebsiteCategory(tab.url);
-
-    if (!groupedTabs[category]) {
-      groupedTabs[category] = [];
-    }
-    groupedTabs[category].push(tab.id);
-  }
-
-  for (const [category, tabIds] of Object.entries(groupedTabs)) {
-    if (tabIds.length) {
-      try {
-        const group = await chrome.tabs.group({ tabIds });
-        await chrome.tabGroups.update(group, { title: category });
-      } catch (err) {
-        console.error(`Error grouping "${category}":`, err);
-      }
-    }
-  }
 }
 
 document.addEventListener("DOMContentLoaded", fetchAndCategorizeTabs);

@@ -38,16 +38,16 @@ CORS(app)  # This allows the Chrome extension to make requests to this server
 
 
 def tab_categorizer(
-        education: bool,
-        entertainment: bool,
-        productivity: bool,
-        tech_and_dev: bool,
-        finance: bool,
-        health_and_wellness: bool,
-        social_media: bool,
-        shopping: bool,
-        gaming: bool,
-        other: bool,
+    education: bool,
+    entertainment: bool,
+    productivity: bool,
+    tech_and_dev: bool,
+    finance: bool,
+    health_and_wellness: bool,
+    social_media: bool,
+    shopping: bool,
+    gaming: bool,
+    other: bool,
 ) -> None:
     """Categorizes the tabs based on the user's input. Only one of the arguments can be true.
 
@@ -89,7 +89,6 @@ def categorize():
         data = request.get_json()
         title = data.get("title", "")
         url = data.get("url", "")
-        print(f"Title: {title}\nURL: {url}")
 
         # Connect to database once
         conn = sqlite3.connect("db/sqlite.db")
@@ -108,7 +107,6 @@ def categorize():
         existing_category = c.fetchone()
 
         if existing_category:
-            print(f"Category: {existing_category[0]}")
             conn.close()
             return jsonify({"output": existing_category[0]})
 
@@ -138,7 +136,6 @@ def categorize():
             if v:
                 category = k
                 break
-        print(f"Category: {category}")
 
         # Store the data using the existing connection
         c.execute(
@@ -159,7 +156,6 @@ def categorize():
 
 @app.route("/categorize-batch", methods=["POST"])
 def categorize_batch():
-    print("Categorizing batch")
     try:
         data = request.get_json()
         tabs = data.get("tabs", [])  # Expect list of {url, title} objects
@@ -172,6 +168,7 @@ def categorize_batch():
         for tab in tabs:
             url = tab.get("url", "")
             title = tab.get("title", "")
+            id = tab.get("id", "")
 
             # Check if URL exists in database
             c.execute(
@@ -186,9 +183,13 @@ def categorize_batch():
             existing_category = c.fetchone()
 
             if existing_category:
-                print(f"Found category for {url}: {existing_category[0]}")
                 results.append(
-                    {"url": url, "title": title, "category": existing_category[0]}
+                    {
+                        "id": id,
+                        "url": url,
+                        "title": title,
+                        "category": existing_category[0],
+                    }
                 )
                 continue
 
@@ -218,7 +219,6 @@ def categorize_batch():
                 if v:
                     category = k
                     break
-            print(f"New category for {url}: {category}")
 
             # Store the new categorization
             c.execute(
@@ -228,8 +228,14 @@ def categorize_batch():
             """,
                 (title, url, category),
             )
-
-            results.append({"url": url, "title": title, "category": category})
+            results.append(
+                {
+                    "id": id,
+                    "url": url,
+                    "title": title,
+                    "category": category,
+                }
+            )
 
         # Commit all new entries and close connection
         conn.commit()
