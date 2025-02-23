@@ -3,10 +3,10 @@ import { useAuth0 } from '@auth0/auth0-react'
 import { Link } from 'react-router-dom'
 
 function Login() {
-    const { loginWithRedirect, isAuthenticated, logout } = useAuth0()
+    const { loginWithRedirect, isAuthenticated, logout, user } = useAuth0()
 
-    const handleLogin = () => {
-        loginWithRedirect()
+    const handleLogin = async () => {
+        await loginWithRedirect()
     }
 
     const handleLogout = () => {

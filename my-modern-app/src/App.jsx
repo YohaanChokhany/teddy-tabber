@@ -22,6 +22,23 @@ function App() {
     const analyticsRef = useRef(null)
     const [analyticsKey, setAnalyticsKey] = useState(0)
 
+    const handleLogin = async (username) => {
+    // Call your POST request here after login
+        const response = await fetch('http://127.0.0.1:5000/login', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({ username: username }), // Include the username
+        })
+        const data = await response.json()
+        console.log(data) // Handle the response as needed
+    }
+
+    if (user) {
+        handleLogin(user?.name)
+    }
+
     const scrollToAboutUs = () => {
         aboutUsRef.current?.scrollIntoView({ behavior: 'smooth' })
     }

@@ -8,14 +8,6 @@ import os
 import json
 from datetime import datetime
 
-def get_public_ip():
-    """Fetches the public IP address using an external API."""
-    try:
-        response = requests.get("https://api.ipify.org?format=json")
-        return response.json().get("ip", "Unknown IP")
-    except Exception as e:
-        print(f"Error fetching IP: {e}")
-        return "Unknown IP"
 
 # Create db directory if it doesn't exist
 os.makedirs("db", exist_ok=True)
@@ -37,6 +29,18 @@ def init_db():
         )
     """
     )
+
+    c.execute(
+        """
+        CREATE TABLE IF NOT EXISTS user_tabs (
+            id INTEGER PRIMARY KEY AUTOINCREMENT,
+            username TEXT NOT NULL UNIQUE,
+            points INTEGER NOT NULL DEFAULT 0,
+            tabs JSON NOT NULL
+        )
+        """
+    )
+
     conn.commit()
     conn.close()
 
@@ -118,7 +122,6 @@ def categorize():
         data = request.get_json()
         title = data.get("title", "")
         url = data.get("url", "")
-        print(f"Title: {title}\nURL: {url}")
 
         conn = sqlite3.connect("db/sqlite.db")
         c = conn.cursor()
@@ -136,7 +139,6 @@ def categorize():
 
         if existing_entry:
             category, score = existing_entry
-            print(f"Category: {category}, Score: {score}")
             conn.close()
             return jsonify({"output": category, "score": score})
 
@@ -163,7 +165,6 @@ def categorize():
                 break
 
         score = get_category_score(category)
-        print(f"Category: {category}, Score: {score}")
 
         c.execute(
             """
@@ -184,13 +185,42 @@ def categorize():
 import json
 
 
+@app.route("/login", methods=["POST"])
+def login():
+    data = request.get_json()
+    username = data.get("username", "")
+    with open("usernames.json", "w") as f:
+        json.dump(data, f, indent=4)
+    return jsonify({"message": "Login successful"})
+
+
+@app.route("/get-usertabs", methods=["POST"])
+def get_usertabs():
+    data = request.get_json()
+    username = data.get("username", "")
+    conn = sqlite3.connect("db/sqlite.db")
+    c = conn.cursor()
+    c.execute(
+        """
+        SELECT points, tabs FROM user_tabs WHERE username = ?
+        """,
+        (username,),
+    )
+    user_tabs = c.fetchone()
+    conn.close()
+    return jsonify({"points": user_tabs[0], "tabs": json.loads(user_tabs[1])})
+
+
 @app.route("/categorize-batch", methods=["POST"])
 def categorize_batch():
-    print("Categorizing batch")
     try:
         data = request.get_json()
         tabs = data.get("tabs", [])
-        user_ip = get_public_ip()  # Fetch public IP
+        numTabGroups = data.get("numTabGroups", 0)
+
+        with open("usernames.json", "r") as f:
+            usernames = json.load(f)
+        username = usernames.get("username", "")
 
         conn = sqlite3.connect("db/sqlite.db")
         c = conn.cursor()
@@ -215,11 +245,9 @@ def categorize_batch():
 
             if existing_entry:
                 category, score = existing_entry
-                print(f"Found category for {url}: {category}, Score: {score}")
             else:
                 category = "other"
                 score = get_category_score(category)
-                print(f"New category for {url}: {category}, Score: {score}")
                 c.execute(
                     """
                     INSERT INTO webpage_categories (title, url, category, score)
@@ -235,21 +263,36 @@ def categorize_batch():
                     "title": title,
                     "category": category,
                     "score": score,
-                    "ip_address": user_ip,
                 }
             )
             total_score += score
 
+        if len(tabs) < 10:
+            total_score += 300
+            print("300 points for opening 10 tabs")
+        education_tabs_count = sum(
+            1 for tab in results if tab["category"] == "education"
+        )
+        if education_tabs_count >= 3:
+            total_score += 300
+            print("300 points for opening 3 education tabs")
+        if numTabGroups > 0:
+            total_score += 300
+            print("300 points for grouping tabs")
+
+        c.execute(
+            """
+            INSERT INTO user_tabs (username, points, tabs)
+            VALUES (?, ?, ?)
+            ON CONFLICT(username) DO UPDATE SET
+                    points = excluded.points,
+                    tabs = excluded.tabs
+                """,
+            (username, total_score, json.dumps(results)),
+        )
+
         conn.commit()
         conn.close()
-
-        # Write results to results.json including IP address
-        with open("results.json", "w") as f:
-            json.dump({"results": results, "total_score": total_score}, f, indent=4)
-
-        # Call the external scripts
-        subprocess.run(["python3", "./my-modern-app/getting_users.py"])
-        subprocess.run(["python3", "mongo_readwrite.py"])
 
         return jsonify({"results": results, "total_score": total_score})
     except Exception as e:
@@ -257,6 +300,7 @@ def categorize_batch():
         if "conn" in locals():
             conn.close()
         return jsonify({"error": str(e)}), 500
+
 
 if __name__ == "__main__":
     app.run(port=5000)

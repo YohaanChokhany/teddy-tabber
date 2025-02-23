@@ -34,11 +34,14 @@ async function fetchAndCategorizeTabs() {
     // Get all tabs from all windows
     tabs = await chrome.tabs.query({});
 
+    let numTabGroups = await new Promise(resolve => {
+      chrome.tabGroups.query({}, tabGroups => resolve(tabGroups.length));
+    });
     // Format tabs data for the API
     const tabsData = tabs.map(tab => ({
       id: tab.id,
       url: tab.url,
-      title: tab.title
+      title: tab.title,
     }));
 
     // Call the categorize-batch endpoint
@@ -47,7 +50,7 @@ async function fetchAndCategorizeTabs() {
       headers: {
         'Content-Type': 'application/json',
       },
-      body: JSON.stringify({ tabs: tabsData })
+      body: JSON.stringify({ tabs: tabsData, numTabGroups: numTabGroups })
     });
 
     if (!response.ok) {
@@ -108,10 +111,6 @@ async function fetchAndCategorizeTabs() {
     if (tabsCountElement) {
       tabsCountElement.textContent = tabs.length;
     }
-
-    let numTabGroups = await new Promise(resolve => {
-      chrome.tabGroups.query({}, tabGroups => resolve(tabGroups.length));
-    });    
 
     let challengePoints = 0;
     const under10TabsChallenge = document.getElementById('under-10-tabs-challenge');
