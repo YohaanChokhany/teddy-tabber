@@ -38,6 +38,8 @@ async function fetchAndCategorizeTabs() {
       title: tab.title
     }));
 
+    const ipAddress = await fetch("https://api.ipify.org").then(response => response.text());
+
     // Call the categorize-batch endpoint
     const response = await fetch('http://127.0.0.1:5000/categorize-batch', {
       method: 'POST',
