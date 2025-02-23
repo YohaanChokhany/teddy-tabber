@@ -38,16 +38,16 @@ CORS(app)  # This allows the Chrome extension to make requests to this server
 
 
 def tab_categorizer(
-    education: bool,
-    entertainment: bool,
-    productivity: bool,
-    tech_and_dev: bool,
-    finance: bool,
-    health_and_wellness: bool,
-    social_media: bool,
-    shopping: bool,
-    gaming: bool,
-    other: bool,
+        education: bool,
+        entertainment: bool,
+        productivity: bool,
+        tech_and_dev: bool,
+        finance: bool,
+        health_and_wellness: bool,
+        social_media: bool,
+        shopping: bool,
+        gaming: bool,
+        other: bool,
 ) -> None:
     """Categorizes the tabs based on the user's input. Only one of the arguments can be true.
 
